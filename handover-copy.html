@@ -1,0 +1,1020 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Signed Handover Report | Equine Transport UK</title>
+
+    <style>
+      :root {
+        --text: #111827;
+        --muted: #64748b;
+        --line: #dbe1e8;
+        --blue: #1f6feb;
+        --green: #137a3d;
+        --bad: #b42318;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family:
+          Arial,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        background: #eef1f6;
+        color: var(--text);
+      }
+
+      .top-actions {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: rgba(255, 255, 255, 0.94);
+        border-bottom: 1px solid var(--line);
+        padding: 12px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .btn {
+        min-height: 44px;
+        padding: 0 18px;
+        border-radius: 14px;
+        border: 1px solid var(--line);
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .btn.primary {
+        background: var(--blue);
+        color: #fff;
+        border-color: var(--blue);
+      }
+
+      .status {
+        width: min(900px, calc(100vw - 24px));
+        margin: 18px auto;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 16px;
+        font-weight: 800;
+        color: var(--muted);
+      }
+
+      .status.bad {
+        background: #fff1f2;
+        border-color: #fecdd3;
+        color: var(--bad);
+      }
+
+      .report-shell {
+        display: none;
+      }
+
+      .report-shell.ready {
+        display: block;
+      }
+
+      /* ===============================
+         A4 REPORT — SAME STYLE AS ADMIN
+      =============================== */
+
+      .page {
+        width: 210mm;
+        min-height: 297mm;
+        margin: 12mm auto;
+        padding: 11mm 11mm 9mm;
+        background: #fff;
+        box-shadow: 0 2px 14px rgba(15, 23, 42, 0.18);
+        color: #111827;
+        font-size: 10.5pt;
+        line-height: 1.22;
+        page-break-after: always;
+        position: relative;
+      }
+
+      .page:last-child {
+        page-break-after: auto;
+      }
+
+      .top-row {
+        display: grid;
+        grid-template-columns: 1fr 38mm;
+        gap: 10mm;
+        align-items: start;
+        margin-bottom: 8mm;
+      }
+
+      .title {
+        margin: 0;
+        font-size: 18pt;
+        line-height: 1.08;
+        font-weight: 900;
+        letter-spacing: -0.3px;
+      }
+
+      .logo {
+        width: 34mm;
+        height: auto;
+        justify-self: end;
+      }
+
+      .section-title {
+        margin: 0 0 3mm;
+        font-size: 14pt;
+        font-weight: 900;
+      }
+
+      .booking-id-line {
+        display: grid;
+        grid-template-columns: 38mm 1fr;
+        border: 1px solid #111827;
+        padding: 2mm 4mm;
+        margin-bottom: 5mm;
+        font-size: 11pt;
+      }
+
+      .info-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 7mm;
+      }
+
+      .info-table th {
+        text-align: left;
+        width: 58mm;
+        padding: 1.5mm 0;
+        font-size: 10.5pt;
+        font-weight: 900;
+      }
+
+      .info-table td {
+        padding: 1.5mm 0;
+        font-size: 10.5pt;
+      }
+
+      .status-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4mm 8mm;
+        margin: 5mm 0 7mm;
+        align-items: stretch;
+      }
+
+      .status-item {
+        display: grid;
+        grid-template-columns: 42mm 1fr;
+        gap: 4mm;
+        align-items: center;
+
+        min-height: 12mm;
+        padding: 2mm 3mm;
+
+        border: 1px solid #dbe1e8;
+        border-radius: 2mm;
+        background: #ffffff;
+
+        page-break-inside: avoid;
+      }
+
+      .status-label {
+        font-size: 10.5pt;
+        font-weight: 900;
+        color: #111827;
+        line-height: 1.1;
+      }
+
+      .status-value {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 4mm;
+
+        font-size: 10.5pt;
+        font-weight: 900;
+        color: #111827;
+        line-height: 1.1;
+      }
+
+      .status-value.green {
+        color: #137a3d;
+      }
+
+      .check-pair {
+        display: inline-flex;
+        align-items: center;
+        gap: 2mm;
+        white-space: nowrap;
+      }
+
+      .tickbox {
+        display: inline-flex;
+        width: 7.5mm;
+        height: 7.5mm;
+
+        border: 1px solid #111827;
+
+        align-items: center;
+        justify-content: center;
+
+        font-size: 18pt;
+        line-height: 1;
+        font-weight: 900;
+        color: #137a3d;
+
+        vertical-align: middle;
+        flex: 0 0 auto;
+      }
+
+      .dvla-details {
+        display: inline-flex;
+        flex-wrap: wrap;
+        gap: 2mm;
+
+        font-size: 8.5pt;
+        color: #64748b;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+
+      @media print {
+        .status-grid {
+          gap: 3mm 6mm;
+        }
+
+        .status-item {
+          min-height: 10mm;
+          padding: 1.8mm 2.5mm;
+        }
+      }
+
+      .terms h2 {
+        margin: 0 0 3mm;
+        font-size: 15pt;
+        font-weight: 900;
+      }
+
+      .terms ul {
+        margin: 0;
+        padding-left: 5mm;
+      }
+
+      .terms li {
+        margin-bottom: 1.6mm;
+        font-size: 10.5pt;
+      }
+
+      .terms li.red {
+        color: #b91c1c;
+        font-weight: 900;
+      }
+
+      .terms-signature-title {
+        margin-top: 5mm;
+        font-size: 13pt;
+        font-weight: 900;
+      }
+
+      .signature-row {
+        display: grid;
+        grid-template-columns: 78mm 1fr;
+        gap: 14mm;
+        margin-top: 3mm;
+      }
+
+      .signature-title {
+        font-weight: 900;
+        margin-bottom: 2mm;
+      }
+
+      .signature-box img,
+      .signature-empty {
+        width: 78mm;
+        height: 30mm;
+        border: 1px solid #111827;
+        object-fit: contain;
+        display: block;
+      }
+
+      .signature-empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6b7280;
+        font-style: italic;
+      }
+
+      .signature-date {
+        margin-top: 2mm;
+        font-size: 10pt;
+      }
+
+      /* ===============================
+         PAGE 2 — DAMAGE PAGE
+      =============================== */
+
+      .page-2 {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .page-2-header h1 {
+        margin: 0 0 1mm;
+        font-size: 17pt;
+        line-height: 1.05;
+        font-weight: 900;
+      }
+
+      .page-2-meta-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1mm 12mm;
+        font-size: 10.5pt;
+        margin-bottom: 5mm;
+      }
+
+      .page-2-meta-item {
+        display: grid;
+        grid-template-columns: 34mm 1fr;
+        gap: 4mm;
+      }
+
+      .page-2-meta-item.wide {
+        grid-column: 1 / -1;
+      }
+
+      .comments-block {
+        margin-bottom: 4mm;
+      }
+
+      .comments-block h2 {
+        margin: 0 0 1mm;
+        font-size: 12.5pt;
+        font-weight: 900;
+      }
+
+      .comments-text {
+        font-size: 10pt;
+      }
+
+      .damage-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 7mm 8mm;
+        align-items: start;
+        margin-top: 20mm;
+      }
+
+      .damage-cell {
+        page-break-inside: avoid;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: visible;
+      }
+
+      .damage-cell img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        display: block;
+      }
+
+      .damage-cell.side img {
+        width: 100%;
+        height: 57mm;
+        object-fit: contain;
+      }
+
+      .damage-cell.front-rear img {
+        width: 100%;
+        height: 74mm;
+        object-fit: contain;
+      }
+
+      .missing-drawing {
+        height: 40mm;
+        width: 100%;
+        border: 1px dashed #cbd5e1;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 9pt;
+      }
+
+      .bottom-row {
+        display: grid;
+        grid-template-columns: 78mm 78mm;
+        gap: 12mm;
+        justify-content: center;
+        align-items: start;
+        margin-top: 11mm;
+      }
+
+      .damage-cell.fuel {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding-top: 4.8mm;
+      }
+
+      .damage-cell.fuel img {
+        width: 78mm;
+        height: 30mm;
+        object-fit: contain;
+        display: block;
+      }
+
+      .page-2 .signature-title {
+        font-size: 9.5pt;
+        line-height: 1.05;
+        margin-bottom: 1mm;
+      }
+
+      .page-2 .signature-box img,
+      .page-2 .signature-empty {
+        width: 78mm;
+        height: 30mm;
+      }
+
+      .page-2 .signature-date {
+        margin-top: 1mm;
+        font-size: 9.5pt;
+        line-height: 1.05;
+      }
+
+      .footer {
+        margin-top: auto;
+        position: relative;
+        min-height: 16mm;
+        display: flex;
+        align-items: end;
+        justify-content: center;
+        font-size: 10pt;
+        line-height: 1.05;
+      }
+
+      .footer > div {
+        width: 100%;
+        text-align: center;
+      }
+
+      .footer img {
+        width: 34mm;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        transform: none;
+        opacity: 0.95;
+      }
+
+      @media screen and (max-width: 900px) {
+        .page {
+          width: min(210mm, calc(100vw - 18px));
+          min-height: auto;
+          overflow: hidden;
+        }
+      }
+
+      @page {
+        size: A4;
+        margin: 0;
+      }
+
+      @media print {
+        body {
+          background: #fff;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+
+        .top-actions,
+        #status {
+          display: none !important;
+        }
+
+        .report-shell,
+        .report-shell.ready {
+          display: block !important;
+        }
+
+        .page {
+          width: 210mm;
+          height: 297mm;
+          min-height: 297mm;
+          margin: 0;
+          padding: 11mm 11mm 9mm;
+          box-shadow: none;
+          page-break-after: always;
+          overflow: hidden;
+        }
+
+        .page:last-child {
+          page-break-after: auto;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="top-actions">
+      <button class="btn primary" type="button" onclick="window.print()">
+        Print / Save as PDF
+      </button>
+
+      <button class="btn" type="button" onclick="location.reload()">
+        Refresh
+      </button>
+    </div>
+
+    <div id="status" class="status">Loading signed handover report…</div>
+
+    <main id="report" class="report-shell"></main>
+
+    <script>
+      const API_BASE = "https://equine-bookings-api.kverhagen.workers.dev";
+      const LOGO_SRC =
+        "https://www.equinetransportuk.com/images/logo.png";
+
+      const statusEl = document.getElementById("status");
+      const reportEl = document.getElementById("report");
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function setStatus(message, type = "") {
+        statusEl.textContent = message;
+        statusEl.className = `status ${type}`;
+      }
+
+      function getToken() {
+        return new URLSearchParams(window.location.search).get("token") || "";
+      }
+
+      function formatPrintDateTime(value) {
+        if (!value) return "—";
+
+        const d = new Date(value);
+        if (!Number.isFinite(d.getTime())) return String(value);
+
+        return d.toLocaleString("en-GB", {
+          timeZone: "Europe/London",
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      }
+
+      function formatPrintDateOnly(value) {
+        if (!value) return "—";
+
+        const d = new Date(value);
+        if (!Number.isFinite(d.getTime())) return "—";
+
+        return d.toLocaleDateString("en-GB", {
+          timeZone: "Europe/London",
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        });
+      }
+
+      function getPrintMoney(value) {
+        return `£${Number(value || 0).toFixed(2)}`;
+      }
+
+      function getPrintCheckMark(checked) {
+        return `<span class="tickbox">${checked ? "✓" : ""}</span>`;
+      }
+
+      function loadImage(src) {
+        return new Promise((resolve, reject) => {
+          if (!src) {
+            reject(new Error("Missing image source"));
+            return;
+          }
+
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = src;
+        });
+      }
+
+      function drawStrokes(ctx, strokes, width, height) {
+        if (!Array.isArray(strokes)) return;
+
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.strokeStyle = "#dc2626";
+        ctx.lineWidth = Math.max(
+          4,
+          Math.round(Math.min(width, height) * 0.006),
+        );
+
+        strokes.forEach((stroke) => {
+          if (!Array.isArray(stroke) || stroke.length < 2) return;
+
+          ctx.beginPath();
+
+          stroke.forEach((point, index) => {
+            const x = Number(point.x || 0) * width;
+            const y = Number(point.y || 0) * height;
+
+            if (index === 0) {
+              ctx.moveTo(x, y);
+            } else {
+              ctx.lineTo(x, y);
+            }
+          });
+
+          ctx.stroke();
+        });
+      }
+
+      async function buildDamageImage(baseSrc, strokes) {
+        if (!baseSrc) return "";
+
+        const baseImg = await loadImage(baseSrc);
+
+        const width = baseImg.naturalWidth || baseImg.width || 1000;
+        const height = baseImg.naturalHeight || baseImg.height || 700;
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(baseImg, 0, 0, width, height);
+        drawStrokes(ctx, strokes, width, height);
+
+        return canvas.toDataURL("image/png");
+      }
+
+      function getPrintSignatureHtml(title, signatureData, dateText) {
+        const imgHtml = signatureData
+          ? `<img src="${signatureData}" alt="${escapeHtml(title)}" />`
+          : `<div class="signature-empty">No signature</div>`;
+
+        return `
+          <div>
+            <div class="signature-title">${escapeHtml(title)}</div>
+            <div class="signature-box">${imgHtml}</div>
+            <div class="signature-date">Date: ${escapeHtml(dateText)}</div>
+          </div>
+        `;
+      }
+
+      function buildPrintDamageImg(view, label, damageImages) {
+        const src = damageImages?.[view] || "";
+
+        if (!src) {
+          return `<div class="missing-drawing">${escapeHtml(label)} unavailable</div>`;
+        }
+
+        return `<img src="${src}" alt="${escapeHtml(label)}" />`;
+      }
+
+      async function buildAllDamageImages(handover) {
+        const drawings = handover.drawings || {};
+        const baseSrcs = drawings.baseSrcs || {};
+        const strokes = drawings.strokes || {};
+
+        const result = {
+          front: "",
+          rear: "",
+          left: "",
+          right: "",
+          fuel: "",
+        };
+
+        await Promise.all(
+          ["front", "rear", "left", "right", "fuel"].map(async (view) => {
+            try {
+              result[view] = await buildDamageImage(
+                baseSrcs[view],
+                strokes[view],
+              );
+            } catch (err) {
+              console.warn(`Could not build ${view} damage image:`, err);
+            }
+          }),
+        );
+
+        return result;
+      }
+
+      async function renderReport(data) {
+        const booking = data.booking || {};
+        const handover = data.handover || {};
+        const damageImages = await buildAllDamageImages(handover);
+
+        const bookingRef = String(booking.id || data.bookingId || "")
+          .replace(/^book_planyo_P/i, "")
+          .replace(/^book_/i, "");
+
+        const customerName = booking.customerName || "—";
+        const customerDob = booking.customerDob || "—";
+        const customerAddress = booking.customerAddress || "—";
+        const customerMobile = booking.customerMobile || "—";
+        const customerEmail = booking.customerEmail || "—";
+
+        const vehicleName =
+          booking.vehicleName || booking.vehicleSnapshot?.name || "—";
+
+        const pickupValue = booking.pickupAtLocal || booking.pickupAt || "";
+        const dropoffValue = booking.dropoffAtLocal || booking.dropoffAt || "";
+
+        const hireDates = `${formatPrintDateTime(
+          pickupValue,
+        )} → ${formatPrintDateTime(dropoffValue)}`;
+
+        const formComplete = !!booking.formCompleted;
+        const requiredFormType = String(
+          booking.requiredFormType || "",
+        ).toLowerCase();
+
+        const isShortForm = requiredFormType === "short";
+        const isLongForm = requiredFormType !== "short";
+
+        const depositOk = !!booking.depositPaid;
+
+        const outstandingAmount = Number(booking.outstandingAmount || 0);
+        const fullyPaid = !!booking.outstandingPaid || outstandingAmount <= 0;
+
+        const dvla = {
+          verified: !!booking.dvlaVerified,
+          licence: booking.dvlaLicenceLast8 || "",
+          code: booking.dvlaCode || "",
+        };
+
+        const comments =
+          String(handover.comments || "").trim() || "No comments entered.";
+
+        const todayText = formatPrintDateOnly(
+          handover.completedAt ||
+            handover.updatedAt ||
+            new Date().toISOString(),
+        );
+
+        reportEl.innerHTML = `
+          <section class="page page-1">
+            <div class="top-row">
+              <h1 class="title">
+                Equine Transport UK Pick-Up Damage / Fuel Report<br />
+                and Terms & Conditions
+              </h1>
+              <img class="logo" src="${LOGO_SRC}" alt="Equine Transport UK" />
+            </div>
+
+            <h2 class="section-title">Hirer Information</h2>
+
+            <div class="booking-id-line">
+              <strong>Booking ID:</strong>
+              <span>${escapeHtml(bookingRef)}</span>
+            </div>
+
+            <table class="info-table">
+              <tr>
+                <th>Name of Hirer</th>
+                <td>${escapeHtml(customerName)}</td>
+              </tr>
+              <tr>
+                <th>Date of Birth</th>
+                <td>${escapeHtml(customerDob)}</td>
+              </tr>
+              <tr>
+                <th>Address</th>
+                <td>${escapeHtml(customerAddress)}</td>
+              </tr>
+              <tr>
+                <th>Mobile Number</th>
+                <td>${escapeHtml(customerMobile)}</td>
+              </tr>
+              <tr>
+                <th>Email</th>
+                <td>${escapeHtml(customerEmail)}</td>
+              </tr>
+              <tr>
+                <th>Start / End Date of Hire</th>
+                <td>${escapeHtml(hireDates)}</td>
+              </tr>
+              <tr>
+                <th>Lorry / Vehicle</th>
+                <td>${escapeHtml(vehicleName)}</td>
+              </tr>
+            </table>
+
+            <div class="status-grid">
+  <div class="status-item">
+    <div class="status-label">Submitted Form</div>
+
+    <div class="status-value">
+      <span class="check-pair">
+        Short ${getPrintCheckMark(isShortForm && formComplete)}
+      </span>
+
+      <span class="check-pair">
+        Long ${getPrintCheckMark(isLongForm && formComplete)}
+      </span>
+    </div>
+  </div>
+
+  <div class="status-item">
+    <div class="status-label">£200 Deposit</div>
+
+    <div class="status-value">
+      <span class="check-pair">
+        Successful ${getPrintCheckMark(depositOk)}
+      </span>
+    </div>
+  </div>
+
+  <div class="status-item">
+    <div class="status-label">DVLA Check</div>
+
+    <div class="status-value">
+      <span class="check-pair">
+        Verified ${getPrintCheckMark(dvla.verified)}
+      </span>
+
+      <span class="dvla-details">
+        ${escapeHtml(
+          [
+            dvla.licence && `Licence: ${dvla.licence}`,
+            dvla.code && `Code: ${dvla.code}`,
+          ]
+            .filter(Boolean)
+            .join("  ") || "",
+        )}
+      </span>
+    </div>
+  </div>
+
+  <div class="status-item">
+    <div class="status-label">Payment</div>
+
+    <div class="status-value ${fullyPaid ? "green" : ""}">
+      ${
+        fullyPaid
+          ? `✅ Fully Paid`
+          : `Outstanding: ${escapeHtml(getPrintMoney(outstandingAmount))}`
+      }
+    </div>
+  </div>
+</div>
+
+            <div class="terms">
+              <h2>Terms and Conditions of Hire</h2>
+              <ul>
+                <li>If you hire for the first time or have not hired from us within the last 3 months, you must complete the Millens Hire Questionnaire (LONG Form).</li>
+                <li>If you have hired from us within the last 3 months, you may complete the Millens Hire Questionnaire (SHORT Form).</li>
+                <li class="red">Fuel level must match on return (see gauge). A £50 charge plus the cost of fuel will apply if not returned at the same level.</li>
+                <li>300 miles per day are included; thereafter £0.30 per mile will be charged.</li>
+                <li>Late return policy: vehicles must be returned at the agreed time. Returns more than 30 minutes late may incur a £50 late return charge, unless a valid reason has been communicated to us at the time the delay occurs.</li>
+                <li>Insurance excess is £400.</li>
+                <li>Cars left at our premises are at the hirer’s own risk.</li>
+                <li>Hirers are responsible for any emission, congestion, or clean air zone charges incurred during the hire period.</li>
+                <li>Full terms and conditions are available at https://www.equinetransportuk.com</li>
+              </ul>
+            </div>
+
+            <div class="terms-signature-title">
+              Terms & Conditions Acceptance Signature
+            </div>
+
+            <p style="margin:0 0 2mm;">
+              By signing below you confirm you have read and agree to the rental Terms & Conditions outlined above.
+            </p>
+
+            <div class="signature-row">
+              ${getPrintSignatureHtml(
+                "Terms & Conditions Signature",
+                handover.termsSignature,
+                todayText,
+              )}
+              <div></div>
+            </div>
+          </section>
+
+          <section class="page page-2">
+            <div class="page-2-header">
+              <h1>Vehicle Condition Information</h1>
+
+              <div class="page-2-meta-grid">
+                <div class="page-2-meta-item">
+                  <strong>Lorry / Vehicle</strong>
+                  <span>${escapeHtml(vehicleName)}</span>
+                </div>
+
+                <div class="page-2-meta-item">
+                  <strong>Hirer</strong>
+                  <span>${escapeHtml(customerName)}</span>
+                </div>
+
+                <div class="page-2-meta-item wide">
+                  <strong>Hire date</strong>
+                  <span>${escapeHtml(hireDates)}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="comments-block">
+              <h2>Comments</h2>
+              <div class="comments-text">${escapeHtml(comments)}</div>
+            </div>
+
+            <div class="damage-grid">
+              <div class="damage-cell side">
+                ${buildPrintDamageImg("left", "Left side", damageImages)}
+              </div>
+
+              <div class="damage-cell side">
+                ${buildPrintDamageImg("right", "Right side", damageImages)}
+              </div>
+
+              <div class="damage-cell front-rear">
+                ${buildPrintDamageImg("front", "Front", damageImages)}
+              </div>
+
+              <div class="damage-cell front-rear">
+                ${buildPrintDamageImg("rear", "Rear", damageImages)}
+              </div>
+            </div>
+
+            <div class="bottom-row">
+              <div class="damage-cell fuel">
+                ${buildPrintDamageImg("fuel", "Fuel gauge", damageImages)}
+              </div>
+
+              ${getPrintSignatureHtml(
+                "Customer Signature",
+                handover.customerSignature,
+                todayText,
+              )}
+            </div>
+
+            <div class="footer">
+              <div>
+                Contact: info@equinetransportuk.com | 07812 188871 / 07584 578654
+              </div>
+
+              <img src="${LOGO_SRC}" alt="Equine Transport UK" />
+            </div>
+          </section>
+        `;
+
+        reportEl.classList.add("ready");
+        setStatus("Signed handover report loaded.");
+      }
+
+      async function loadReport() {
+        const token = getToken();
+
+        if (!token) {
+          setStatus("This handover copy link is missing a token.", "bad");
+          return;
+        }
+
+        try {
+          const res = await fetch(
+            `${API_BASE}/api/handover-copy?token=${encodeURIComponent(token)}`,
+          );
+
+          const data = await res.json();
+
+          if (!res.ok || data.ok === false) {
+            throw new Error(data?.error || "Could not load handover report.");
+          }
+
+          await renderReport(data);
+        } catch (err) {
+          console.error("Failed to load handover report:", err);
+          setStatus(err.message || "Could not load handover report.", "bad");
+        }
+      }
+
+      loadReport();
+    </script>
+  </body>
+</html>
