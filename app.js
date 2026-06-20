@@ -623,13 +623,13 @@ const customerDobInput = document.getElementById("customer-dob");
 
 /* ===============================
    CUSTOMER ADDRESS AUTOCOMPLETE
-   Uses same Maps key endpoint as calculators
+   Uses Worker Maps key endpoint
 ================================ */
 
-const CUSTOMER_MAPS_KEY_ENDPOINT =
-  "https://www.equinetransportuk.com/test/_functions/mapskey";
+const CUSTOMER_MAPS_KEY_ENDPOINT = `${BACKEND_API_BASE}/api/maps-key`;
 
 let customerAddressAutocompleteStarted = false;
+let customerAddressAutocompleteLoading = false;
 
 function initCustomerAddressAutocomplete() {
   if (customerAddressAutocompleteStarted) return;
@@ -638,9 +638,20 @@ function initCustomerAddressAutocomplete() {
 
   customerAddressAutocompleteStarted = true;
 
-  new google.maps.places.Autocomplete(customerAddressInput, {
-    componentRestrictions: { country: "uk" },
-    fields: ["formatted_address", "geometry", "name"],
+  const autocomplete = new google.maps.places.Autocomplete(
+    customerAddressInput,
+    {
+      componentRestrictions: { country: "uk" },
+      fields: ["formatted_address", "geometry", "name"],
+    },
+  );
+
+  autocomplete.addListener("place_changed", () => {
+    const place = autocomplete.getPlace();
+
+    if (place?.formatted_address) {
+      customerAddressInput.value = place.formatted_address;
+    }
   });
 }
 
@@ -657,13 +668,15 @@ async function loadCustomerAddressAutocomplete() {
     params.has("outstanding");
 
   // ✅ On Stripe return/confirmation page we do not need address autocomplete.
-  // This avoids unnecessary Google Maps loading after payment.
   if (isStripeReturnPage) return;
 
   if (window.google?.maps?.places?.Autocomplete) {
     initCustomerAddressAutocomplete();
     return;
   }
+
+  if (customerAddressAutocompleteLoading) return;
+  customerAddressAutocompleteLoading = true;
 
   try {
     const existingScript = document.querySelector(
@@ -696,19 +709,21 @@ async function loadCustomerAddressAutocomplete() {
 
     document.head.appendChild(script);
   } catch (err) {
+    customerAddressAutocompleteLoading = false;
     console.warn("Address autocomplete unavailable:", err);
   }
 }
 
-// Load Google address suggestions only when the address field is used.
-// This keeps normal page loads and Stripe return pages clean.
-customerAddressInput?.addEventListener(
-  "focus",
-  () => {
-    loadCustomerAddressAutocomplete();
-  },
-  { once: true },
-);
+// Load/retry Google address suggestions when the address field is used.
+["focus", "click", "input"].forEach((eventName) => {
+  customerAddressInput?.addEventListener(
+    eventName,
+    () => {
+      loadCustomerAddressAutocomplete();
+    },
+    { passive: true },
+  );
+});
 
 const hiredWithin3MonthsInput = document.getElementById(
   "hired-within-3-months",
