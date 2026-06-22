@@ -4265,57 +4265,345 @@ function validateDurationSelection() {
 }
 
 /* ======================================================
-   Fleet rendering
+   Fleet overlay content
 ====================================================== */
 
-function getVehicleImagePrefix(vehicle) {
-  const name = vehicle.name.toLowerCase();
+const FLEET_DETAIL_CONTENT = {
+  "v35-1": {
+    subtitle: "3.5T Safety Bar Lorry · LS23",
+    intro:
+      "A practical rear-facing 2-horse lorry with an externally releasable safety breast bar, designed for safe and straightforward self-drive hire.",
+    highlights: [
+      "Externally releasable safety breast bar",
+      "Rear-facing 2-horse layout",
+      "Horse camera and reversing camera",
+      "Tack/changing area",
+      "Roof ventilation and windows",
+    ],
+    bestFor: [
+      "Shows, clinics and local trips",
+      "Owners wanting a safety-bar layout",
+      "Self-drive day hire and half-day hire when available",
+    ],
+    video: "videos/lorry-ls23.mp4",
+  },
 
-  if (name.includes("stallion")) return "3.5 T Stallion (DL22)";
-  if (name.includes("safety")) return "3.5T With Safety Bar (LS23)";
-  if (name.includes("breast")) return "3.5 T With Breast Bar (CA21)";
-  if (name.includes("3 horse")) return "7.5 T 3 Horses with Living";
-  if (name.includes("4 horse")) return "7.5 T 4 Horses No Living";
+  "v35-2": {
+    subtitle: "3.5T Stallion Lorry · DL22",
+    intro:
+      "A back-facing 2-horse stallion layout with high partitions and no breast bar, ideal for horses that prefer more individual space.",
+    highlights: [
+      "Stallion-style layout with high partitions",
+      "No breast bar",
+      "Horse camera and reversing camera",
+      "Roof vent and windows",
+      "Compact 3.5T self-drive option",
+    ],
+    bestFor: [
+      "Stallions or horses needing extra separation",
+      "Nervous travellers",
+      "Shows, lessons, clinics and vet visits",
+    ],
+    video: "videos/lorry-dl22.mp4",
+  },
 
-  return null;
-}
+  "v35-3": {
+    subtitle: "3.5T Breast Bar Lorry · CA21",
+    intro:
+      "A back-facing 2-horse lorry with an adjustable breast bar, tack/changing room and camera system for confident everyday transport.",
+    highlights: [
+      "Adjustable breast bar",
+      "Back-facing 2-horse layout",
+      "Horse camera and reversing camera",
+      "Tack/changing room",
+      "Roof ventilation",
+    ],
+    bestFor: [
+      "Everyday self-drive horsebox hire",
+      "Shows, clinics and vet appointments",
+      "Owners wanting a traditional breast-bar layout",
+    ],
+    video: "videos/lorry-ca21.mp4",
+  },
 
-function getVehiclePreviewImage(vehicle) {
-  if (!vehicle) return "";
+  "v75-1": {
+    subtitle: "7.5T 3 Horse with Living",
+    intro:
+      "A high-end 7.5T lorry for up to 3 horses, with living space for comfort on longer days, shows and overnight trips.",
+    highlights: [
+      "Carries up to 3 horses",
+      "Living area",
+      "Comfortable long-day transport",
+      "Practical storage",
+      "Professional 7.5T layout",
+    ],
+    bestFor: [
+      "Longer show days",
+      "Overnight events",
+      "Multiple horses with living space required",
+    ],
+    video: "videos/lorry-75-living.mp4",
+  },
 
-  const prefix =
-    typeof getVehicleImagePrefix === "function"
-      ? getVehicleImagePrefix(vehicle)
-      : null;
+  "v75-2": {
+    subtitle: "7.5T 4 Horses No Living",
+    intro:
+      "A practical 7.5T lorry for up to 4 horses, with a large tack area and a functional layout where horse capacity is the priority.",
+    highlights: [
+      "Carries up to 4 horses",
+      "Large tack/storage area",
+      "No living section",
+      "Functional multi-horse layout",
+      "Ideal for yard or group transport",
+    ],
+    bestFor: [
+      "Multiple horses",
+      "Yard trips and group outings",
+      "Owners prioritising horse capacity over living space",
+    ],
+    video: "videos/lorry-75-noliving.mp4",
+  },
+};
 
-  let file = "";
+function getFleetImagesForVehicle(vehicle) {
+  if (!vehicle) return [];
 
-  // Use the same gallery image system as the fleet cards
+  const prefix = getVehicleImagePrefix(vehicle);
+  let imageFiles = [];
+
   if (prefix && Array.isArray(window.fleetImages)) {
-    file =
-      window.fleetImages.find((img) => String(img || "").startsWith(prefix)) ||
-      "";
+    imageFiles = window.fleetImages.filter((img) =>
+      String(img || "").startsWith(prefix),
+    );
   }
 
-  // Fallback to the vehicle card image
-  if (!file) {
-    file = vehicle.image || "";
+  if (!imageFiles.length && vehicle.image) {
+    imageFiles = [vehicle.image.replace(/^images\//, "")];
   }
 
-  if (!file) return "";
-
-  // Full URLs stay untouched
-  if (/^https?:\/\//i.test(file)) {
-    return file;
-  }
-
-  // Make sure local image paths point to /images/
-  if (!file.startsWith("images/")) {
-    file = `images/${file}`;
-  }
-
-  return file;
+  return imageFiles.map((file) => {
+    const value = String(file || "");
+    if (!value) return "";
+    if (/^https?:\/\//i.test(value)) return value;
+    return value.startsWith("images/") ? value : `images/${value}`;
+  }).filter(Boolean);
 }
+
+function getFleetDetail(vehicle) {
+  const fallbackHorses = vehicle?.horses || (String(vehicle?.id || "").startsWith("v35") ? 2 : "");
+  const fallbackSubtitle = [
+    vehicle?.type,
+    vehicle?.code,
+    fallbackHorses ? `${fallbackHorses} horses` : "",
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
+  return {
+    subtitle: fallbackSubtitle,
+    intro: vehicle?.summary || "",
+    highlights: [],
+    bestFor: [],
+    video: "",
+    ...(FLEET_DETAIL_CONTENT[vehicle?.id] || {}),
+  };
+}
+
+function renderFleetList(items) {
+  if (!Array.isArray(items) || !items.length) return "";
+
+  return `
+    <ul>
+      ${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+    </ul>
+  `;
+}
+
+function ensureFleetDetailOverlay() {
+  let overlay = document.getElementById("fleet-detail-overlay");
+
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.id = "fleet-detail-overlay";
+    overlay.className = "fleet-detail-overlay";
+    overlay.hidden = true;
+
+    overlay.innerHTML = `
+      <div class="fleet-detail-modal" role="dialog" aria-modal="true" aria-labelledby="fleet-detail-title">
+        <button class="fleet-detail-close" type="button" data-fleet-overlay-close aria-label="Close lorry details">
+          ×
+        </button>
+
+        <div class="fleet-detail-body">
+          <div class="fleet-detail-media">
+            <div class="fleet-detail-main-image"></div>
+            <div class="fleet-detail-gallery"></div>
+            <div class="fleet-detail-video"></div>
+          </div>
+
+          <div class="fleet-detail-copy">
+            <p class="kicker">Fleet details</p>
+            <h2 id="fleet-detail-title"></h2>
+            <p class="fleet-detail-subtitle"></p>
+            <p class="fleet-detail-intro"></p>
+
+            <div class="fleet-detail-info-grid">
+              <div>
+                <h3>Highlights</h3>
+                <div class="fleet-detail-highlights"></div>
+              </div>
+
+              <div>
+                <h3>Best for</h3>
+                <div class="fleet-detail-best-for"></div>
+              </div>
+            </div>
+
+            <div class="fleet-detail-actions">
+              <button class="btn fleet-detail-book" type="button">
+                Book this lorry
+              </button>
+              <button class="btn ghost" type="button" data-fleet-overlay-close>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    overlay.addEventListener("click", (event) => {
+      if (
+        event.target === overlay ||
+        event.target.closest("[data-fleet-overlay-close]")
+      ) {
+        closeFleetDetailOverlay();
+      }
+    });
+
+    overlay.querySelector(".fleet-detail-book")?.addEventListener("click", () => {
+      const vehicleId = overlay.dataset.vehicleId;
+      closeFleetDetailOverlay();
+
+      if (vehicleId) {
+        startBooking(vehicleId);
+      }
+    });
+  }
+
+  return overlay;
+}
+
+function openFleetDetailOverlay(vehicleId) {
+  const vehicle = vehicles.find((item) => item.id === vehicleId);
+  if (!vehicle) return;
+
+  const detail = getFleetDetail(vehicle);
+  const images = getFleetImagesForVehicle(vehicle);
+  const mainImage = images[0] || vehicle.image || "";
+
+  const overlay = ensureFleetDetailOverlay();
+  overlay.dataset.vehicleId = vehicle.id;
+
+  const title = overlay.querySelector("#fleet-detail-title");
+  const subtitle = overlay.querySelector(".fleet-detail-subtitle");
+  const intro = overlay.querySelector(".fleet-detail-intro");
+  const mainImageWrap = overlay.querySelector(".fleet-detail-main-image");
+  const gallery = overlay.querySelector(".fleet-detail-gallery");
+  const video = overlay.querySelector(".fleet-detail-video");
+  const highlights = overlay.querySelector(".fleet-detail-highlights");
+  const bestFor = overlay.querySelector(".fleet-detail-best-for");
+
+  if (title) title.textContent = vehicle.name;
+  if (subtitle) subtitle.textContent = detail.subtitle || "";
+  if (intro) intro.textContent = detail.intro || vehicle.summary || "";
+
+  if (mainImageWrap) {
+    mainImageWrap.innerHTML = mainImage
+      ? `<img src="${escapeHtml(mainImage)}" alt="${escapeHtml(vehicle.name)}">`
+      : "";
+  }
+
+  if (gallery) {
+    gallery.innerHTML = images
+      .slice(0, 8)
+      .map(
+        (src) => `
+          <button class="fleet-detail-thumb" type="button" aria-label="Show image">
+            <img src="${escapeHtml(src)}" alt="${escapeHtml(vehicle.name)}">
+          </button>
+        `,
+      )
+      .join("");
+
+    gallery.querySelectorAll(".fleet-detail-thumb").forEach((thumb) => {
+      thumb.addEventListener("click", () => {
+        const img = thumb.querySelector("img");
+        if (!img || !mainImageWrap) return;
+
+        mainImageWrap.innerHTML = `
+          <img src="${escapeHtml(img.getAttribute("src"))}" alt="${escapeHtml(vehicle.name)}">
+        `;
+      });
+    });
+  }
+
+  if (video) {
+    if (detail.video) {
+      video.innerHTML = `
+        <h3>Video</h3>
+        <video controls playsinline preload="metadata" poster="${escapeHtml(mainImage)}">
+          <source src="${escapeHtml(detail.video)}" type="video/mp4">
+          Your browser does not support video playback.
+        </video>
+      `;
+    } else {
+      video.innerHTML = `
+        <h3>Video</h3>
+        <div class="fleet-detail-video-placeholder">
+          Video coming soon.
+        </div>
+      `;
+    }
+  }
+
+  if (highlights) {
+    highlights.innerHTML = renderFleetList(detail.highlights);
+  }
+
+  if (bestFor) {
+    bestFor.innerHTML = renderFleetList(detail.bestFor);
+  }
+
+  overlay.hidden = false;
+  document.body.classList.add("fleet-detail-open");
+
+  setTimeout(() => {
+    overlay.querySelector(".fleet-detail-close")?.focus();
+  }, 0);
+}
+
+function closeFleetDetailOverlay() {
+  const overlay = document.getElementById("fleet-detail-overlay");
+  if (!overlay) return;
+
+  const activeVideo = overlay.querySelector("video");
+  if (activeVideo) {
+    activeVideo.pause();
+    activeVideo.currentTime = 0;
+  }
+
+  overlay.hidden = true;
+  document.body.classList.remove("fleet-detail-open");
+}
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeFleetDetailOverlay();
+  }
+});
 
 function renderFleet() {
   if (!fleetGrid) return;
@@ -4332,115 +4620,28 @@ function renderFleet() {
           ? "living"
           : "no living";
 
-    /* ===============================
-       Find images for this vehicle
-    =============================== */
-
-    const prefix = getVehicleImagePrefix(vehicle);
-
-    let imageFiles = [];
-
-    if (prefix && window.fleetImages) {
-      imageFiles = window.fleetImages.filter((img) => img.startsWith(prefix));
-    }
-
-    if (!imageFiles.length)
-      imageFiles = [vehicle.image.replace(/^images\//, "")];
-
-    imageFiles = imageFiles.map((f) =>
-      f.startsWith("images/") ? f : "images/" + f,
-    );
-
-    /* ===============================
-       Image wrap
-    =============================== */
+    const imageFiles = getFleetImagesForVehicle(vehicle);
+    const firstImage = imageFiles[0] || vehicle.image || "";
+    const horseCount =
+      vehicle.horses || (String(vehicle.id || "").startsWith("v35") ? 2 : "");
 
     const imageWrap = document.createElement("div");
     imageWrap.className = "fleet-image-wrap";
 
     const img = document.createElement("img");
-    img.src = imageFiles[0];
-    img.dataset.images = JSON.stringify(imageFiles);
+    img.src = firstImage;
+    img.alt = vehicle.name;
 
     const overlay = document.createElement("div");
     overlay.className = "fleet-overlay";
     overlay.innerHTML = `
-      <button class="apple-play-btn" type="button">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M8 5v14l11-7z"></path>
-        </svg>
-        <span>See More</span>
+      <button class="apple-play-btn fleet-see-more" type="button" data-lorry-id="${escapeHtml(vehicle.id)}">
+        <span>See more</span>
       </button>
     `;
 
     imageWrap.appendChild(img);
     imageWrap.appendChild(overlay);
-
-    /* ===============================
-       Slideshow logic
-    =============================== */
-
-    let currentIndex = 0;
-    let playing = false;
-    let interval = null;
-    const images = imageFiles;
-
-    function startSlideshow() {
-      if (images.length <= 1) return;
-
-      playing = true;
-      overlay.classList.add("playing");
-
-      const btn = overlay.querySelector(".apple-play-btn");
-      if (btn) {
-        btn.style.opacity = "0";
-        btn.style.pointerEvents = "none";
-      }
-
-      interval = setInterval(() => {
-        currentIndex = (currentIndex + 1) % images.length;
-        img.style.opacity = "0";
-
-        setTimeout(() => {
-          img.src = images[currentIndex];
-          img.style.opacity = "1";
-        }, 200);
-      }, 2500);
-
-      activeSlideshow = stopSlideshow;
-    }
-
-    function stopSlideshow() {
-      if (interval) clearInterval(interval);
-
-      playing = false;
-      currentIndex = 0;
-      img.src = images[0];
-
-      overlay.classList.remove("playing");
-
-      const btn = overlay.querySelector(".apple-play-btn");
-      if (btn) {
-        btn.style.opacity = "1";
-        btn.style.pointerEvents = "auto";
-      }
-
-      if (activeSlideshow === stopSlideshow) activeSlideshow = null;
-    }
-
-    overlay.addEventListener("click", (e) => {
-      e.stopPropagation();
-
-      if (activeSlideshow && activeSlideshow !== stopSlideshow)
-        activeSlideshow();
-
-      if (!playing) startSlideshow();
-      else stopSlideshow();
-    });
-
-    /* ===============================
-       Card content
-    =============================== */
 
     const content = document.createElement("div");
     content.className = "fleet-content";
@@ -4449,12 +4650,13 @@ function renderFleet() {
       <p class="muted">
         ${escapeHtml(vehicle.type)}
         ${vehicle.code ? ` · ${escapeHtml(vehicle.code)}` : ""}
-        · ${vehicle.horses} horses · ${vehicle.seats} seats · ${escapeHtml(livingLabel)}
+        ${horseCount ? ` · ${escapeHtml(horseCount)} horses` : ""}
+        · ${vehicle.seats} seats · ${escapeHtml(livingLabel)}
       </p>
       <p class="muted tiny">${escapeHtml(vehicle.summary)}</p>
       <p><strong>From £${Number(vehicle.dayRate).toFixed(0)}</strong> / day</p>
 
-      <button class="btn fleet-card-book" type="button" data-lorry-id="${vehicle.id}">
+      <button class="btn fleet-card-book" type="button" data-lorry-id="${escapeHtml(vehicle.id)}">
         Book this Lorry
       </button>
     `;
@@ -4462,15 +4664,16 @@ function renderFleet() {
     card.appendChild(imageWrap);
     card.appendChild(content);
 
-    /* ===============================
-       Booking button
-    =============================== */
+    card.querySelector(".fleet-see-more")?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openFleetDetailOverlay(vehicle.id);
+    });
 
     content
       .querySelector(".fleet-card-book")
       ?.addEventListener("click", (e) => {
         e.stopPropagation();
-        startBooking(vehicle.id);
+        openFleetDetailOverlay(vehicle.id);
       });
 
     fleetGrid.appendChild(card);
