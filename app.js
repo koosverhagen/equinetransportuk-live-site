@@ -4285,7 +4285,7 @@ const FLEET_DETAIL_CONTENT = {
       "Owners wanting a safety-bar layout",
       "Self-drive day hire and half-day hire when available",
     ],
-    video: "videos/lorry-ls23.mp4",
+    video: "",
   },
 
   "v35-2": {
@@ -4304,7 +4304,7 @@ const FLEET_DETAIL_CONTENT = {
       "Nervous travellers",
       "Shows, lessons, clinics and vet visits",
     ],
-    video: "videos/lorry-dl22.mp4",
+    video: "",
   },
 
   "v35-3": {
@@ -4323,7 +4323,7 @@ const FLEET_DETAIL_CONTENT = {
       "Shows, clinics and vet appointments",
       "Owners wanting a traditional breast-bar layout",
     ],
-    video: "videos/lorry-ca21.mp4",
+    video: "",
   },
 
   "v75-1": {
@@ -4342,7 +4342,7 @@ const FLEET_DETAIL_CONTENT = {
       "Overnight events",
       "Multiple horses with living space required",
     ],
-    video: "videos/lorry-75-living.mp4",
+    video: "",
   },
 
   "v75-2": {
@@ -4361,7 +4361,7 @@ const FLEET_DETAIL_CONTENT = {
       "Yard trips and group outings",
       "Owners prioritising horse capacity over living space",
     ],
-    video: "videos/lorry-75-noliving.mp4",
+    video: "",
   },
 };
 
