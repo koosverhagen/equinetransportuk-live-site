@@ -4365,6 +4365,19 @@ const FLEET_DETAIL_CONTENT = {
   },
 };
 
+
+function getVehicleImagePrefix(vehicle) {
+  const prefixes = {
+    "v35-1": "3.5T With Safety Bar (LS23)",
+    "v35-2": "3.5 T Stallion (DL22)",
+    "v35-3": "3.5 T With Breast Bar (CA21)",
+    "v75-1": "7.5 T 3 Horses with Living",
+    "v75-2": "7.5 T 4 Horses No Living",
+  };
+
+  return prefixes[vehicle?.id] || "";
+}
+
 function getFleetImagesForVehicle(vehicle) {
   if (!vehicle) return [];
 
