@@ -10548,3 +10548,98 @@ body.dark-keynote-v8.driven-dark-page .site-footer {
   }
 }
 
+
+/* ======================================================
+   DARK KEYNOTE V32 — Desktop DOB icon + mid-width header fix
+====================================================== */
+
+/* 1) Strong DOB date icon fix:
+   hide the browser's dark native icon and draw our own white icon above it. */
+body.dark-keynote-v8 .dob-calendar-wrap,
+body.dark-keynote-v8 #customer-dob.closest-date-wrap {
+  position: relative !important;
+}
+
+body.dark-keynote-v8 #customer-dob,
+body.dark-keynote-v8 input#customer-dob[type="date"] {
+  color: #ffffff !important;
+  color-scheme: dark !important;
+  padding-right: 52px !important;
+  background-color: rgba(7,25,43,.72) !important;
+  background-image: none !important;
+}
+
+body.dark-keynote-v8 #customer-dob::-webkit-calendar-picker-indicator,
+body.dark-keynote-v8 input#customer-dob[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0 !important;
+  filter: opacity(0) !important;
+  background: transparent !important;
+  color: transparent !important;
+  cursor: pointer !important;
+  width: 52px !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body.dark-keynote-v8 .dob-calendar-icon {
+  position: absolute !important;
+  right: 15px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 22px !important;
+  height: 22px !important;
+  z-index: 8 !important;
+  pointer-events: none !important;
+  display: block !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+  filter: drop-shadow(0 0 5px rgba(255,255,255,.22)) !important;
+}
+
+body.dark-keynote-v8 .dob-calendar-icon svg {
+  display: block !important;
+  width: 22px !important;
+  height: 22px !important;
+  stroke: currentColor !important;
+}
+
+body.dark-keynote-v8 #customer-dob::-webkit-datetime-edit,
+body.dark-keynote-v8 #customer-dob::-webkit-datetime-edit-fields-wrapper,
+body.dark-keynote-v8 #customer-dob::-webkit-datetime-edit-text,
+body.dark-keynote-v8 #customer-dob::-webkit-datetime-edit-month-field,
+body.dark-keynote-v8 #customer-dob::-webkit-datetime-edit-day-field,
+body.dark-keynote-v8 #customer-dob::-webkit-datetime-edit-year-field {
+  color: #ffffff !important;
+}
+
+/* 2) Desktop/tablet header fix:
+   the blue phone number was too wide while the full menu was still visible.
+   Hide it in the squeeze range and tighten nav spacing. */
+@media (min-width: 981px) and (max-width: 1230px) {
+  body.dark-keynote-v8 .header-inner {
+    grid-template-columns: auto minmax(0, 1fr) auto !important;
+    gap: clamp(14px, 1.5vw, 22px) !important;
+  }
+
+  body.dark-keynote-v8 .main-nav {
+    gap: clamp(14px, 1.35vw, 22px) !important;
+    justify-content: flex-end !important;
+  }
+
+  body.dark-keynote-v8 .main-nav a {
+    font-size: clamp(13px, 1.22vw, 15px) !important;
+    letter-spacing: -0.035em !important;
+  }
+
+  body.dark-keynote-v8 .site-header .phone-link {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1231px) {
+  body.dark-keynote-v8 .site-header .phone-link {
+    display: inline-flex !important;
+  }
+}
+
