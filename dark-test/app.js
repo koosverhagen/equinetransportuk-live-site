@@ -7457,8 +7457,6 @@ window.fleetImages = window.fleetImages || [
   "3.5T With Safety Bar (LS23)6.webp",
   "3.5T With Safety Bar (LS23)7.webp",
   "3.5T With Safety Bar (LS23)8.webp",
-  "3.5T With Safety Bar (LS23)9.webp",
-  "3.5T With Safety Bar (LS23)10.webp",
   "7.5 T 3 Horses with Living1.webp",
   "7.5 T 3 Horses with Living2.webp",
   "7.5 T 3 Horses with Living3.webp",
