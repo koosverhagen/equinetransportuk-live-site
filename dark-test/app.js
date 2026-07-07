@@ -4991,7 +4991,60 @@ function renderFleetList(items) {
   `;
 }
 
+
+function ensureFleetDetailUiPolishStyles() {
+  if (document.getElementById("fleet-detail-ui-polish-style")) return;
+
+  const style = document.createElement("style");
+  style.id = "fleet-detail-ui-polish-style";
+  style.textContent = `
+    .fleet-detail-overlay,
+    .fleet-detail-modal,
+    .fleet-detail-body {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .fleet-detail-overlay::-webkit-scrollbar,
+    .fleet-detail-modal::-webkit-scrollbar,
+    .fleet-detail-body::-webkit-scrollbar {
+      width: 0 !important;
+      height: 0 !important;
+      display: none !important;
+    }
+
+    .fleet-detail-video-frame {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #0f172a;
+    }
+
+    .fleet-detail-video-frame video,
+    .fleet-detail-video video.fleet-detail-video-player {
+      display: block;
+      width: 100%;
+      height: 100%;
+      max-height: none !important;
+      border-radius: 0 !important;
+      object-fit: cover;
+      background: #0f172a;
+    }
+
+    @media (max-width: 820px) {
+      .fleet-detail-video-frame {
+        border-radius: 16px;
+      }
+    }
+  `;
+
+  document.head.appendChild(style);
+}
+
 function ensureFleetDetailOverlay() {
+  ensureFleetDetailUiPolishStyles();
+
   let overlay = document.getElementById("fleet-detail-overlay");
 
   if (!overlay) {
@@ -5128,10 +5181,12 @@ function openFleetDetailOverlay(vehicleId) {
     if (detail.video) {
       video.innerHTML = `
         <h3>Video</h3>
-        <video controls playsinline preload="metadata" poster="${escapeHtml(mainImage)}">
-          <source src="${escapeHtml(detail.video)}" type="video/mp4">
-          Your browser does not support video playback.
-        </video>
+        <div class="fleet-detail-video-frame">
+          <video class="fleet-detail-video-player" controls playsinline preload="auto">
+            <source src="${escapeHtml(detail.video)}" type="video/mp4">
+            Your browser does not support video playback.
+          </video>
+        </div>
       `;
     } else {
       video.innerHTML = `
