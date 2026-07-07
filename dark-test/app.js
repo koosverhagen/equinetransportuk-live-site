@@ -597,13 +597,31 @@ pickupTimeInput?.addEventListener("change", async () => {
 const availabilityResults = document.getElementById("availability-results");
 const startBookingBtn = document.getElementById("start-booking-btn");
 
-startBookingBtn?.addEventListener("click", () => {
-  resetBookingFlow();
+startBookingBtn?.addEventListener("click", (event) => {
+  event.preventDefault();
+
+  resetBookingFlow({ skipScroll: true });
 
   setTimeout(() => {
-    document.getElementById("booking")?.scrollIntoView({
+    const target =
+      document.getElementById("availability-form") ||
+      document.querySelector(".hero-availability");
+
+    if (!target) return;
+
+    const headerHeight =
+      document.querySelector(".site-header")?.getBoundingClientRect().height ||
+      82;
+
+    const y =
+      target.getBoundingClientRect().top +
+      window.scrollY -
+      headerHeight -
+      12;
+
+    window.scrollTo({
+      top: Math.max(0, y),
       behavior: "smooth",
-      block: "start",
     });
   }, 120);
 });
@@ -2963,7 +2981,7 @@ function goBackToDates() {
   }
 }
 
-function resetBookingFlow() {
+function resetBookingFlow(options = {}) {
   console.log("🔄 HARD reset booking flow");
 
   resetAvailabilityAutoSubmitState();
@@ -3067,11 +3085,14 @@ function resetBookingFlow() {
 
   /* ===============================
      SCROLL TOP
+     Can be skipped when another button handles its own scroll target.
   =============================== */
 
-  requestAnimationFrame(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
+  if (options?.skipScroll !== true) {
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
 
   /* ===============================
      FINAL STATE
