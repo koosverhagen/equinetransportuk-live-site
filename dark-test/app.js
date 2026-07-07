@@ -226,9 +226,7 @@ function startBooking(vehicleId) {
   if (selectedLorryInput) selectedLorryInput.value = vehicle?.name || "";
   if (selectedBaseInput) selectedBaseInput.value = "";
 
-  const bookingSection =
-    document.getElementById("availability-form") ||
-    document.getElementById("booking");
+  const bookingSection = document.getElementById("booking");
 
   bookingSection?.scrollIntoView({
     behavior: "smooth",
@@ -603,7 +601,7 @@ startBookingBtn?.addEventListener("click", () => {
   resetBookingFlow();
 
   setTimeout(() => {
-    document.getElementById("availability-form")?.scrollIntoView({
+    document.getElementById("booking")?.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
@@ -961,14 +959,7 @@ function attachAppleDatePicker(input, options = {}) {
   trigger.setAttribute("aria-label", options.title || "Choose date");
   trigger.innerHTML = `
     <span class="apple-date-trigger-text">Choose date</span>
-    <span class="apple-date-trigger-icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M7 2V5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
-        <path d="M17 2V5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
-        <path d="M4 9H20" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
-        <rect x="4" y="5" width="16" height="15" rx="3" stroke="currentColor" stroke-width="1.9"/>
-      </svg>
-    </span>
+    <span class="apple-date-trigger-icon" aria-hidden="true">⌄</span>
   `;
 
   input.insertAdjacentElement("afterend", trigger);
@@ -2962,9 +2953,7 @@ function goBackToDates() {
 
   /* scroll to calendar */
 
-  const calendar =
-    document.getElementById("availability-calendar") ||
-    document.getElementById("availability-form");
+  const calendar = document.getElementById("availability-calendar");
 
   if (calendar) {
     calendar.scrollIntoView({
@@ -3030,13 +3019,7 @@ function resetBookingFlow() {
   if (row) row.style.display = "none";
 
   const group = document.getElementById("pickup-time-group");
-  if (group) {
-    group.style.setProperty("display", "none", "important");
-    group.classList.remove("is-visible");
-  }
-  document
-    .getElementById("availability-form")
-    ?.classList.remove("has-pickup-time");
+  if (group) group.style.display = "none";
 
   const warningBox = document.getElementById("preselected-warning");
   if (warningBox) {
@@ -4661,15 +4644,11 @@ async function updatePickupTimeVisibility() {
 
   const duration = Number(durationDaysInput?.value || 0);
   const group = document.getElementById("pickup-time-group");
-  const availabilityBox = document.getElementById("availability-form");
 
   if (!group || !pickupTimeInput) return;
 
   if (duration === 0.5) {
-    // Dark test CSS used !important to hide this field, so force the inline value too.
-    group.style.setProperty("display", "block", "important");
-    group.classList.add("is-visible");
-    availabilityBox?.classList.add("has-pickup-time");
+    group.style.display = "block";
 
     // ✅ FORCE manual user choice (prevents auto-submit flow)
     pickupTimeInput.value = "";
@@ -4699,9 +4678,7 @@ async function updatePickupTimeVisibility() {
       pickupTimeInput.focus();
     }, 150);
   } else {
-    group.style.setProperty("display", "none", "important");
-    group.classList.remove("is-visible");
-    availabilityBox?.classList.remove("has-pickup-time");
+    group.style.display = "none";
 
     // ✅ Full-day default (keeps existing behaviour)
     pickupTimeInput.value = "07:00";
@@ -4726,29 +4703,6 @@ function autoCheckAvailability() {
 pickupDateInput?.addEventListener("change", async () => {
   const pickupDate = pickupDateInput?.value;
 
-  // Date choice should NOT immediately jump to lorry availability.
-  // Customer chooses the date first, then chooses duration, then the availability
-  // search can run from the duration change or the Check availability button.
-  resetAvailabilityAutoSubmitState?.();
-
-  selectedAvailability = null;
-  LAST_AVAILABLE_VEHICLES = [];
-
-  if (availabilityResults) {
-    availabilityResults.innerHTML = "";
-  }
-
-  if (durationDaysInput) {
-    durationDaysInput.value = "";
-  }
-
-  if (pickupTimeInput) {
-    pickupTimeInput.value = "";
-  }
-
-  updatePickupTimeVisibility();
-  updateEarlyPickupAvailability();
-
   if (pickupDate) {
     window.__lastDurationCheck = "";
 
@@ -4772,9 +4726,7 @@ pickupDateInput?.addEventListener("change", async () => {
     }
   }
 
-  setTimeout(() => {
-    durationDaysInput?.focus?.({ preventScroll: true });
-  }, 80);
+  autoCheckAvailability();
 });
 
 /* trigger when duration changes */
@@ -4848,7 +4800,8 @@ const FLEET_DETAIL_CONTENT = {
       "Nervous travellers",
       "Shows, lessons, clinics and vet visits",
     ],
-    video: "",
+    video: "videos/dl22-lorry-tour.mp4",
+    videoPoster: "videos/dl22-lorry-tour-poster.jpg",
   },
 
   "v35-3": {
@@ -8822,264 +8775,3 @@ async function showVehiclePreview(date, event) {
   watchBookingUpdates(); // run once immediately
   setInterval(watchBookingUpdates, 10000); // every 10 seconds
 })();
-
-/* ======================================================
-   DARK KEYNOTE V24 — Hero slideshow controller
-====================================================== */
-
-function initDarkHeroSlideshow() {
-  const root = document.querySelector(".hero-slideshow");
-  if (!root || root.dataset.heroSlideshowReady === "true") return;
-
-  const slides = Array.from(root.querySelectorAll(".hero-slide"));
-  const dots = Array.from(root.querySelectorAll("[data-hero-slide-dot]"));
-  const prev = root.querySelector('[data-hero-slide="prev"]');
-  const next = root.querySelector('[data-hero-slide="next"]');
-
-  if (!slides.length) return;
-
-  root.dataset.heroSlideshowReady = "true";
-
-  let index = Math.max(
-    0,
-    slides.findIndex((slide) => slide.classList.contains("is-active")),
-  );
-  if (index < 0) index = 0;
-  let timer = null;
-
-  function showSlide(nextIndex) {
-    index = (nextIndex + slides.length) % slides.length;
-
-    slides.forEach((slide, i) => {
-      slide.classList.toggle("is-active", i === index);
-    });
-
-    dots.forEach((dot, i) => {
-      dot.classList.toggle("is-active", i === index);
-      dot.setAttribute("aria-current", i === index ? "true" : "false");
-    });
-  }
-
-  function stop() {
-    if (timer) {
-      clearInterval(timer);
-      timer = null;
-    }
-  }
-
-  function start() {
-    stop();
-    timer = setInterval(() => showSlide(index + 1), 4500);
-  }
-
-  prev?.addEventListener("click", () => {
-    showSlide(index - 1);
-    start();
-  });
-
-  next?.addEventListener("click", () => {
-    showSlide(index + 1);
-    start();
-  });
-
-  dots.forEach((dot) => {
-    dot.addEventListener("click", () => {
-      const dotIndex = Number(dot.dataset.heroSlideDot);
-      if (Number.isFinite(dotIndex)) {
-        showSlide(dotIndex);
-        start();
-      }
-    });
-  });
-
-  root.addEventListener("mouseenter", stop);
-  root.addEventListener("mouseleave", start);
-
-  showSlide(index);
-  start();
-}
-
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initDarkHeroSlideshow);
-} else {
-  initDarkHeroSlideshow();
-}
-
-/* ======================================================
-   DARK KEYNOTE V32 — white DOB calendar overlay icon
-====================================================== */
-
-function initDobCalendarWhiteIcon() {
-  const input = document.getElementById("customer-dob");
-  if (!input || input.dataset.dobIconReady === "true") return;
-
-  const parent = input.closest(".form-field") || input.parentElement;
-  if (!parent) return;
-
-  input.dataset.dobIconReady = "true";
-  parent.classList.add("dob-calendar-wrap");
-
-  if (!parent.querySelector(".dob-calendar-icon")) {
-    const icon = document.createElement("span");
-    icon.className = "dob-calendar-icon";
-    icon.setAttribute("aria-hidden", "true");
-    icon.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="none">
-        <path d="M7 3v3M17 3v3M4.5 9.2h15M6.2 5.5h11.6c1 0 1.7.8 1.7 1.7v10.6c0 1-.8 1.7-1.7 1.7H6.2c-1 0-1.7-.8-1.7-1.7V7.2c0-1 .8-1.7 1.7-1.7Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    `;
-    parent.appendChild(icon);
-  }
-}
-
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initDobCalendarWhiteIcon);
-} else {
-  initDobCalendarWhiteIcon();
-}
-
-/* ======================================================
-   DARK KEYNOTE V33 — centre DOB calendar icon in input
-====================================================== */
-
-function initDobCalendarWhiteIconV33() {
-  const input = document.getElementById("customer-dob");
-  if (!input) return;
-
-  let shell = input.closest(".dob-date-shell");
-
-  if (!shell) {
-    shell = document.createElement("span");
-    shell.className = "dob-date-shell";
-    input.parentNode.insertBefore(shell, input);
-    shell.appendChild(input);
-  }
-
-  let icon =
-    shell.querySelector(".dob-calendar-icon") ||
-    input.closest(".form-field")?.querySelector(".dob-calendar-icon");
-
-  if (!icon) {
-    icon = document.createElement("span");
-    icon.className = "dob-calendar-icon";
-    icon.setAttribute("aria-hidden", "true");
-    icon.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="none">
-        <path d="M7 3v3M17 3v3M4.5 9.2h15M6.2 5.5h11.6c1 0 1.7.8 1.7 1.7v10.6c0 1-.8 1.7-1.7 1.7H6.2c-1 0-1.7-.8-1.7-1.7V7.2c0-1 .8-1.7 1.7-1.7Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    `;
-  }
-
-  if (icon.parentElement !== shell) {
-    shell.appendChild(icon);
-  }
-}
-
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initDobCalendarWhiteIconV33);
-} else {
-  initDobCalendarWhiteIconV33();
-}
-
-/* ======================================================
-   DARK KEYNOTE V36 — responsive header phone guard
-   Prevents the blue phone number from overlapping the menu while resizing.
-====================================================== */
-
-function initHeaderPhoneOverlapGuardV36() {
-  const body = document.body;
-  const header = document.querySelector(".site-header");
-  const inner = header?.querySelector(".header-inner");
-  const brand = header?.querySelector(".brand");
-  const nav = header?.querySelector(".main-nav");
-  const phone = header?.querySelector(".phone-link");
-
-  if (!body || !header || !inner || !brand || !nav || !phone) return;
-
-  const measurePhoneWidth = () => {
-    const wasCollapsed = body.classList.contains("header-phone-collapsed");
-    if (wasCollapsed) body.classList.remove("header-phone-collapsed");
-
-    const width = Math.max(
-      phone.scrollWidth || 0,
-      phone.getBoundingClientRect().width || 0,
-      128,
-    );
-
-    phone.dataset.phoneNaturalWidth = String(Math.ceil(width));
-
-    if (wasCollapsed) body.classList.add("header-phone-collapsed");
-    return width;
-  };
-
-  let naturalPhoneWidth = measurePhoneWidth();
-  let ticking = false;
-
-  const update = () => {
-    ticking = false;
-
-    const viewport =
-      window.innerWidth || document.documentElement.clientWidth || 0;
-
-    if (viewport < 981) {
-      body.classList.remove("header-phone-collapsed");
-      return;
-    }
-
-    const innerWidth =
-      inner.clientWidth || inner.getBoundingClientRect().width || viewport;
-    const brandWidth =
-      brand.getBoundingClientRect().width || brand.scrollWidth || 0;
-    const navWidth = Math.max(
-      nav.scrollWidth || 0,
-      nav.getBoundingClientRect().width || 0,
-    );
-    const phoneWidth = Number(
-      phone.dataset.phoneNaturalWidth || naturalPhoneWidth || 128,
-    );
-
-    /* Extra breathing room prevents the edge-case touch/overlap while dragging
-       the browser width. */
-    const safetyGap = 68;
-
-    const shouldHide =
-      viewport <= 1500 ||
-      brandWidth + navWidth + phoneWidth + safetyGap > innerWidth;
-
-    body.classList.toggle("header-phone-collapsed", shouldHide);
-  };
-
-  const requestUpdate = () => {
-    if (ticking) return;
-    ticking = true;
-    window.requestAnimationFrame(update);
-  };
-
-  window.addEventListener("resize", requestUpdate, { passive: true });
-  window.addEventListener("orientationchange", requestUpdate, {
-    passive: true,
-  });
-
-  if ("ResizeObserver" in window) {
-    const observer = new ResizeObserver(() => {
-      naturalPhoneWidth = measurePhoneWidth();
-      requestUpdate();
-    });
-    observer.observe(inner);
-    observer.observe(nav);
-    observer.observe(brand);
-  }
-
-  window.addEventListener("load", () => {
-    naturalPhoneWidth = measurePhoneWidth();
-    requestUpdate();
-  });
-
-  requestUpdate();
-}
-
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initHeaderPhoneOverlapGuardV36);
-} else {
-  initHeaderPhoneOverlapGuardV36();
-}
