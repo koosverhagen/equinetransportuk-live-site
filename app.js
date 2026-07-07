@@ -7401,6 +7401,8 @@ window.fleetImages = window.fleetImages || [
   "3.5 T With Breast Bar (CA21)4.webp",
   "3.5 T With Breast Bar (CA21)5.webp",
   "3.5 T With Breast Bar (CA21)6.webp",
+  "3.5 T With Breast Bar (CA21)7.webp",
+  "3.5 T With Breast Bar (CA21)8.webp",
   "3.5T With Safety Bar (LS23)1.webp",
   "3.5T With Safety Bar (LS23)2.webp",
   "3.5T With Safety Bar (LS23)3.webp",
