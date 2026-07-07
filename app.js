@@ -4820,6 +4820,7 @@ const FLEET_DETAIL_CONTENT = {
       "Owners wanting a traditional breast-bar layout",
     ],
     video: "videos/ca21-lorry-tour.mp4",
+    videoPoster: "videos/ca21-lorry-tour-poster.jpg",
   },
 
   "v75-1": {
@@ -5134,7 +5135,7 @@ function openFleetDetailOverlay(vehicleId) {
       video.innerHTML = `
         <h3>Video</h3>
         <div class="fleet-detail-video-frame">
-          <video class="fleet-detail-video-player" controls playsinline preload="auto">
+          <video class="fleet-detail-video-player" controls playsinline preload="metadata" ${detail.videoPoster ? `poster="${escapeHtml(detail.videoPoster)}"` : ""}>
             <source src="${escapeHtml(detail.video)}" type="video/mp4">
             Your browser does not support video playback.
           </video>
