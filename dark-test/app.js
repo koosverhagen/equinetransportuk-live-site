@@ -4867,7 +4867,7 @@ const FLEET_DETAIL_CONTENT = {
       "Shows, clinics and vet appointments",
       "Owners wanting a traditional breast-bar layout",
     ],
-    video: "",
+    video: "videos/ca21-lorry-tour.mp4",
   },
 
   "v75-1": {
