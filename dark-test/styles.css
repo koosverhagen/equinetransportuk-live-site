@@ -11279,3 +11279,24 @@ body.dark-keynote-v8.contact-dark-page .site-footer h4 {
   }
 }
 
+/* ======================================================
+   DARK TEST V41 — MOBILE EDGE BREATHING ROOM
+   Adds a small 3px inner side gap on phones so text and
+   full-width buttons do not sit too tight to the screen edge.
+====================================================== */
+@media (max-width: 700px) {
+  .container {
+    padding-left: 3px !important;
+    padding-right: 3px !important;
+  }
+
+  body.dark-keynote-v8 .container {
+    padding-left: 3px !important;
+    padding-right: 3px !important;
+  }
+
+  body.dark-keynote-v8 .header-inner {
+    padding-left: 13px !important;
+    padding-right: 13px !important;
+  }
+}
