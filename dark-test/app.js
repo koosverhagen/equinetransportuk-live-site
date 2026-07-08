@@ -597,15 +597,90 @@ pickupTimeInput?.addEventListener("change", async () => {
 const availabilityResults = document.getElementById("availability-results");
 const startBookingBtn = document.getElementById("start-booking-btn");
 
-startBookingBtn?.addEventListener("click", () => {
-  resetBookingFlow();
+function scrollToPickupDateInput() {
+  const target =
+    pickupDateInput?.__appleDateTrigger ||
+    pickupDateInput ||
+    availabilityForm ||
+    document.getElementById("booking");
+
+  if (!target) return;
+
+  const header = document.querySelector(".site-header");
+  const headerOffset = header
+    ? Math.ceil(header.getBoundingClientRect().height + 14)
+    : 92;
+
+  const targetTop =
+    target.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+
+  window.scrollTo({
+    top: Math.max(0, targetTop),
+    behavior: "smooth",
+  });
 
   setTimeout(() => {
-    document.getElementById("booking")?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-  }, 120);
+    target.focus?.({ preventScroll: true });
+  }, 350);
+}
+
+function resetBookingFlowForHeroStart() {
+  resetAvailabilityAutoSubmitState();
+
+  IS_RESETTING = true;
+
+  selectedAvailability = null;
+  PRESELECTED_VEHICLE = null;
+  LOCKED_VEHICLE = false;
+  BLOCK_AUTO_SCROLL = false;
+  AVAILABILITY_FLOW_LOCK = false;
+
+  if (pickupDateInput) pickupDateInput.value = "";
+  if (selectedPickupInput) selectedPickupInput.value = "";
+  window.SELECTED_DATE = null;
+
+  if (selectedLorryInput) selectedLorryInput.value = "";
+  if (selectedDurationInput) selectedDurationInput.value = "";
+  if (selectedBaseInput) selectedBaseInput.value = "";
+  if (pickupTimeInput) pickupTimeInput.value = "";
+  if (durationDaysInput) durationDaysInput.value = "";
+
+  const row = document.getElementById("pickup-time-row");
+  if (row) row.style.display = "none";
+
+  const group = document.getElementById("pickup-time-group");
+  if (group) group.style.display = "none";
+
+  const warningBox = document.getElementById("preselected-warning");
+  if (warningBox) {
+    warningBox.innerHTML = "";
+    warningBox.style.display = "none";
+  }
+
+  if (availabilityResults) availabilityResults.innerHTML = "";
+
+  const confirmation = document.getElementById("booking-confirmation");
+  if (confirmation) confirmation.innerHTML = "";
+
+  if (typeof updateAppleDateTrigger === "function") {
+    updateAppleDateTrigger(pickupDateInput);
+    updateAppleDateTrigger(selectedPickupInput);
+  }
+
+  updateCalendarVehicleLabel();
+  updateCheckoutSummary();
+  goToStep(1);
+
+  IS_RESETTING = false;
+}
+
+startBookingBtn?.addEventListener("click", (event) => {
+  event.preventDefault();
+  resetBookingFlowForHeroStart();
+
+  setTimeout(() => {
+    scrollToPickupDateInput();
+  }, 80);
 });
 const bookingForm = document.getElementById("booking-form");
 const selectedLorryInput = document.getElementById("selected-lorry") || {
@@ -3083,8 +3158,12 @@ function resetBookingFlow() {
 }
 
 function resetCalendarToToday() {
+  const calendarEl = document.getElementById("availability-calendar");
+
   if (!window.renderCalendar || !window.__calendarState) {
-    console.warn("⚠️ Calendar not ready");
+    if (calendarEl) {
+      console.warn("⚠️ Calendar not ready");
+    }
     return;
   }
 
