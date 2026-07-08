@@ -676,11 +676,21 @@ function resetBookingFlowForHeroStart() {
 
 startBookingBtn?.addEventListener("click", (event) => {
   event.preventDefault();
-  resetBookingFlowForHeroStart();
 
+  // Match the live-site behaviour: Start booking must perform the full
+  // hard reset so old dates, selected lorries, cached availability, checkout
+  // state and calendar state cannot carry over.
+  if (typeof resetBookingFlow === "function") {
+    resetBookingFlow();
+  } else {
+    resetBookingFlowForHeroStart();
+  }
+
+  // The hard reset scrolls to the top as part of the clean start.
+  // After that, put the customer straight on the pick-up date box.
   setTimeout(() => {
     scrollToPickupDateInput();
-  }, 80);
+  }, 140);
 });
 const bookingForm = document.getElementById("booking-form");
 const selectedLorryInput = document.getElementById("selected-lorry") || {
