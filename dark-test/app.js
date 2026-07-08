@@ -4860,7 +4860,8 @@ const FLEET_DETAIL_CONTENT = {
       "Owners wanting a safety-bar layout",
       "Self-drive day hire and half-day hire when available",
     ],
-    video: "",
+    video: "videos/ls23-lorry-tour.mp4",
+    videoPoster: "videos/ls23-lorry-tour-poster.jpg",
   },
 
   "v35-2": {
