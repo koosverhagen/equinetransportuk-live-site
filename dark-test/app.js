@@ -191,7 +191,7 @@ function startBooking(vehicleId) {
   // ✅ Starting from a fleet card must always begin clean.
   // Prevents old date/duration/results/summary carrying over.
   if (typeof resetBookingFlow === "function") {
-    resetBookingFlow();
+    resetBookingFlow({ skipScrollTop: true, skipCalendarReset: true });
   }
 
   PRESELECTED_VEHICLE = vehicleId;
@@ -597,33 +597,36 @@ pickupTimeInput?.addEventListener("change", async () => {
 const availabilityResults = document.getElementById("availability-results");
 const startBookingBtn = document.getElementById("start-booking-btn");
 
+function scrollToCheckAvailability() {
+  const target =
+    document.getElementById("availability-form") ||
+    document.getElementById("booking");
+
+  if (!target) return;
+
+  const headerHeight =
+    document.querySelector(".site-header")?.getBoundingClientRect().height || 0;
+
+  const targetTop =
+    target.getBoundingClientRect().top + window.pageYOffset - headerHeight - 10;
+
+  window.scrollTo({
+    top: Math.max(0, targetTop),
+    behavior: "smooth",
+  });
+}
+
 startBookingBtn?.addEventListener("click", (event) => {
   event.preventDefault();
 
-  resetBookingFlow({ skipScroll: true });
+  resetBookingFlow({
+    skipScrollTop: true,
+    skipCalendarReset: true,
+  });
 
-  setTimeout(() => {
-    const target =
-      document.getElementById("availability-form") ||
-      document.querySelector(".hero-availability");
-
-    if (!target) return;
-
-    const headerHeight =
-      document.querySelector(".site-header")?.getBoundingClientRect().height ||
-      82;
-
-    const y =
-      target.getBoundingClientRect().top +
-      window.scrollY -
-      headerHeight -
-      12;
-
-    window.scrollTo({
-      top: Math.max(0, y),
-      behavior: "smooth",
-    });
-  }, 120);
+  window.requestAnimationFrame(() => {
+    setTimeout(scrollToCheckAvailability, 40);
+  });
 });
 const bookingForm = document.getElementById("booking-form");
 const selectedLorryInput = document.getElementById("selected-lorry") || {
@@ -2984,6 +2987,9 @@ function goBackToDates() {
 function resetBookingFlow(options = {}) {
   console.log("🔄 HARD reset booking flow");
 
+  const skipScrollTop = options?.skipScrollTop === true;
+  const skipCalendarReset = options?.skipCalendarReset === true;
+
   resetAvailabilityAutoSubmitState();
 
   IS_RESETTING = true;
@@ -3016,7 +3022,9 @@ function resetBookingFlow(options = {}) {
     .forEach((el) => el.classList.remove("cal-selected", "active"));
 
   // 🔥 THIS handles month + render (single source of truth)
-  resetCalendarToToday();
+  if (!skipCalendarReset) {
+    resetCalendarToToday({ silent: true });
+  }
 
   /* ===============================
      CLEAR FORM FIELDS
@@ -3085,10 +3093,9 @@ function resetBookingFlow(options = {}) {
 
   /* ===============================
      SCROLL TOP
-     Can be skipped when another button handles its own scroll target.
   =============================== */
 
-  if (options?.skipScroll !== true) {
+  if (!skipScrollTop) {
     requestAnimationFrame(() => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
@@ -3103,10 +3110,14 @@ function resetBookingFlow(options = {}) {
   console.log("🔄 Booking reset complete");
 }
 
-function resetCalendarToToday() {
+function resetCalendarToToday(options = {}) {
+  const silent = options?.silent === true;
+
   if (!window.renderCalendar || !window.__calendarState) {
-    console.warn("⚠️ Calendar not ready");
-    return;
+    if (!silent) {
+      console.warn("⚠️ Calendar not ready");
+    }
+    return false;
   }
 
   const today = new Date();
@@ -3117,6 +3128,7 @@ function resetCalendarToToday() {
 
   // 🔥 render with correct month
   window.renderCalendar();
+  return true;
 }
 
 async function fetchJsonWithTimeout(url, options = {}, timeoutMs = 12000) {
