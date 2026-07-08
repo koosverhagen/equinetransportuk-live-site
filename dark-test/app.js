@@ -566,7 +566,11 @@ durationDaysInput?.addEventListener("change", async () => {
 
   // 🔥 slight delay prevents double-trigger chain
   setTimeout(() => {
-    maybeAutoSubmitAvailability();
+    if (LOCKED_VEHICLE && PRESELECTED_VEHICLE) {
+      forcePreselectedAvailabilityCheck(40);
+    } else {
+      maybeAutoSubmitAvailability();
+    }
   }, 50);
 });
 
@@ -590,7 +594,11 @@ pickupTimeInput?.addEventListener("change", async () => {
   =============================== */
 
   setTimeout(() => {
-    maybeAutoSubmitAvailability();
+    if (LOCKED_VEHICLE && PRESELECTED_VEHICLE) {
+      forcePreselectedAvailabilityCheck(40);
+    } else {
+      maybeAutoSubmitAvailability();
+    }
   }, 50);
 });
 
@@ -626,6 +634,8 @@ function scrollToPickupDateInput() {
 
 function resetBookingFlowForHeroStart() {
   resetAvailabilityAutoSubmitState();
+  AVAILABILITY_FLOW_LOCK = false;
+  window.__lastDurationCheck = "";
 
   IS_RESETTING = true;
 
@@ -677,20 +687,15 @@ function resetBookingFlowForHeroStart() {
 startBookingBtn?.addEventListener("click", (event) => {
   event.preventDefault();
 
-  // Match the live-site behaviour: Start booking must perform the full
-  // hard reset so old dates, selected lorries, cached availability, checkout
-  // state and calendar state cannot carry over.
   if (typeof resetBookingFlow === "function") {
     resetBookingFlow();
   } else {
     resetBookingFlowForHeroStart();
   }
 
-  // The hard reset scrolls to the top as part of the clean start.
-  // After that, put the customer straight on the pick-up date box.
   setTimeout(() => {
     scrollToPickupDateInput();
-  }, 140);
+  }, 80);
 });
 const bookingForm = document.getElementById("booking-form");
 const selectedLorryInput = document.getElementById("selected-lorry") || {
@@ -1784,6 +1789,30 @@ function maybeAutoSubmitAvailability() {
       AVAILABILITY_FLOW_LOCK = false;
     }, 150);
   }
+}
+
+function forcePreselectedAvailabilityCheck(delay = 120) {
+  if (IS_STRIPE_RETURN || STRIPE_FLOW_COMPLETED) return;
+  if (!availabilityForm) return;
+  if (!LOCKED_VEHICLE || !PRESELECTED_VEHICLE) return;
+
+  const pickupDate = pickupDateInput?.value || "";
+  const duration = Number(durationDaysInput?.value || 0);
+  const pickupTime = pickupTimeInput?.value || "";
+
+  if (!pickupDate || !duration) return;
+  if (duration === 0.5 && !pickupTime) return;
+
+  const expectedKey = buildAvailabilitySubmitKey();
+
+  clearTimeout(availabilityAutoSubmitTimer);
+  availabilityAutoSubmitTimer = setTimeout(() => {
+    if (!LOCKED_VEHICLE || !PRESELECTED_VEHICLE) return;
+    if (buildAvailabilitySubmitKey() !== expectedKey) return;
+
+    lastAvailabilityAutoSubmitKey = "";
+    availabilityForm.requestSubmit();
+  }, delay);
 }
 
 async function getVehicleAvailability(
@@ -4815,7 +4844,11 @@ pickupDateInput?.addEventListener("change", async () => {
     }
   }
 
-  autoCheckAvailability();
+  if (LOCKED_VEHICLE && PRESELECTED_VEHICLE) {
+    forcePreselectedAvailabilityCheck(180);
+  } else {
+    autoCheckAvailability();
+  }
 });
 
 /* trigger when duration changes */
