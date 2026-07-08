@@ -191,7 +191,7 @@ function startBooking(vehicleId) {
   // ✅ Starting from a fleet card must always begin clean.
   // Prevents old date/duration/results/summary carrying over.
   if (typeof resetBookingFlow === "function") {
-    resetBookingFlow({ skipScrollTop: true, skipCalendarReset: true });
+    resetBookingFlow();
   }
 
   PRESELECTED_VEHICLE = vehicleId;
@@ -597,36 +597,15 @@ pickupTimeInput?.addEventListener("change", async () => {
 const availabilityResults = document.getElementById("availability-results");
 const startBookingBtn = document.getElementById("start-booking-btn");
 
-function scrollToCheckAvailability() {
-  const target =
-    document.getElementById("availability-form") ||
-    document.getElementById("booking");
+startBookingBtn?.addEventListener("click", () => {
+  resetBookingFlow();
 
-  if (!target) return;
-
-  const headerHeight =
-    document.querySelector(".site-header")?.getBoundingClientRect().height || 0;
-
-  const targetTop =
-    target.getBoundingClientRect().top + window.pageYOffset - headerHeight - 10;
-
-  window.scrollTo({
-    top: Math.max(0, targetTop),
-    behavior: "smooth",
-  });
-}
-
-startBookingBtn?.addEventListener("click", (event) => {
-  event.preventDefault();
-
-  resetBookingFlow({
-    skipScrollTop: true,
-    skipCalendarReset: true,
-  });
-
-  window.requestAnimationFrame(() => {
-    setTimeout(scrollToCheckAvailability, 40);
-  });
+  setTimeout(() => {
+    document.getElementById("booking")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, 120);
 });
 const bookingForm = document.getElementById("booking-form");
 const selectedLorryInput = document.getElementById("selected-lorry") || {
@@ -2984,11 +2963,8 @@ function goBackToDates() {
   }
 }
 
-function resetBookingFlow(options = {}) {
+function resetBookingFlow() {
   console.log("🔄 HARD reset booking flow");
-
-  const skipScrollTop = options?.skipScrollTop === true;
-  const skipCalendarReset = options?.skipCalendarReset === true;
 
   resetAvailabilityAutoSubmitState();
 
@@ -3022,9 +2998,7 @@ function resetBookingFlow(options = {}) {
     .forEach((el) => el.classList.remove("cal-selected", "active"));
 
   // 🔥 THIS handles month + render (single source of truth)
-  if (!skipCalendarReset) {
-    resetCalendarToToday({ silent: true });
-  }
+  resetCalendarToToday();
 
   /* ===============================
      CLEAR FORM FIELDS
@@ -3095,11 +3069,9 @@ function resetBookingFlow(options = {}) {
      SCROLL TOP
   =============================== */
 
-  if (!skipScrollTop) {
-    requestAnimationFrame(() => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-  }
+  requestAnimationFrame(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
 
   /* ===============================
      FINAL STATE
@@ -3110,14 +3082,10 @@ function resetBookingFlow(options = {}) {
   console.log("🔄 Booking reset complete");
 }
 
-function resetCalendarToToday(options = {}) {
-  const silent = options?.silent === true;
-
+function resetCalendarToToday() {
   if (!window.renderCalendar || !window.__calendarState) {
-    if (!silent) {
-      console.warn("⚠️ Calendar not ready");
-    }
-    return false;
+    console.warn("⚠️ Calendar not ready");
+    return;
   }
 
   const today = new Date();
@@ -3128,7 +3096,6 @@ function resetCalendarToToday(options = {}) {
 
   // 🔥 render with correct month
   window.renderCalendar();
-  return true;
 }
 
 async function fetchJsonWithTimeout(url, options = {}, timeoutMs = 12000) {
