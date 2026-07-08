@@ -605,6 +605,64 @@ pickupTimeInput?.addEventListener("change", async () => {
 const availabilityResults = document.getElementById("availability-results");
 const startBookingBtn = document.getElementById("start-booking-btn");
 
+function getBookingScrollHeaderOffset() {
+  const header = document.querySelector(".site-header");
+  return header ? Math.ceil(header.getBoundingClientRect().height + 14) : 92;
+}
+
+function scrollToAvailabilityAndDuration(options = {}) {
+  const target =
+    availabilityForm ||
+    document.getElementById("availability-form") ||
+    document.getElementById("booking") ||
+    pickupDateInput ||
+    durationDaysInput;
+
+  if (!target) return;
+
+  const top =
+    target.getBoundingClientRect().top +
+    window.pageYOffset -
+    getBookingScrollHeaderOffset();
+
+  window.scrollTo({
+    top: Math.max(0, top),
+    behavior: options.behavior || "smooth",
+  });
+
+  const durationTarget =
+    durationDaysInput || document.getElementById("duration-days");
+
+  if (durationTarget) {
+    setTimeout(() => {
+      durationTarget.classList.add("duration-highlight");
+      setTimeout(() => {
+        durationTarget.classList.remove("duration-highlight");
+      }, 1500);
+    }, options.highlightDelay ?? 350);
+  }
+}
+
+function closeMainNavigationAfterBookingJump() {
+  const nav = document.getElementById("main-nav");
+  const toggle = document.getElementById("nav-toggle");
+
+  nav?.classList.remove("open");
+  toggle?.classList.remove("open");
+  toggle?.setAttribute("aria-expanded", "false");
+}
+
+function resetAndScrollToAvailabilityDuration() {
+  if (typeof resetBookingFlow === "function") {
+    resetBookingFlow();
+  }
+
+  setTimeout(() => {
+    scrollToAvailabilityAndDuration();
+  }, 140);
+}
+
+
 function scrollToPickupDateInput() {
   const target =
     pickupDateInput?.__appleDateTrigger ||
@@ -686,16 +744,22 @@ function resetBookingFlowForHeroStart() {
 
 startBookingBtn?.addEventListener("click", (event) => {
   event.preventDefault();
+  resetAndScrollToAvailabilityDuration();
+});
 
-  if (typeof resetBookingFlow === "function") {
-    resetBookingFlow();
-  } else {
-    resetBookingFlowForHeroStart();
+document.querySelectorAll(".main-nav a").forEach((link) => {
+  const label = String(link.textContent || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ");
+
+  if (label === "self drive" || label === "book self drive") {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      closeMainNavigationAfterBookingJump();
+      resetAndScrollToAvailabilityDuration();
+    });
   }
-
-  setTimeout(() => {
-    scrollToPickupDateInput();
-  }, 80);
 });
 const bookingForm = document.getElementById("booking-form");
 const selectedLorryInput = document.getElementById("selected-lorry") || {
@@ -3180,11 +3244,13 @@ function resetBookingFlow() {
   goToStep(1);
 
   /* ===============================
-     SCROLL TOP
+     SCROLL TO AVAILABILITY + DURATION
   =============================== */
 
   requestAnimationFrame(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (typeof scrollToAvailabilityAndDuration === "function") {
+      scrollToAvailabilityAndDuration();
+    }
   });
 
   /* ===============================
