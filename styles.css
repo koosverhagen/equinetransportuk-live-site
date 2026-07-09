@@ -5207,3 +5207,76 @@ input#customer-dob[type="date"] {
   background-image: none !important;
 }
 
+/* ======================================================
+   LIVE V73 — final date field icon cleanup
+   Removes the calendar graphic from the availability date button
+   and hides the native DOB calendar button in Your Details.
+====================================================== */
+
+#availability-form .apple-date-trigger-icon,
+.apple-date-trigger-icon {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+#availability-form .apple-date-trigger,
+.apple-date-trigger {
+  justify-content: flex-start !important;
+  gap: 0 !important;
+}
+
+#availability-form .apple-date-trigger,
+#availability-form #duration-days,
+#availability-form select#duration-days {
+  height: 60px !important;
+  min-height: 60px !important;
+  max-height: 60px !important;
+  box-sizing: border-box !important;
+}
+
+#availability-form .apple-date-trigger {
+  padding: 14px 16px !important;
+}
+
+#availability-form #duration-days,
+#availability-form select#duration-days {
+  padding: 14px 16px !important;
+  line-height: 1.2 !important;
+}
+
+#customer-dob,
+input#customer-dob[type="date"] {
+  background-image: none !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+}
+
+#customer-dob::-webkit-calendar-picker-indicator,
+input#customer-dob[type="date"]::-webkit-calendar-picker-indicator {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  -webkit-appearance: none !important;
+  pointer-events: none !important;
+}
+
+#customer-dob::-webkit-inner-spin-button,
+#customer-dob::-webkit-clear-button,
+input#customer-dob[type="date"]::-webkit-inner-spin-button,
+input#customer-dob[type="date"]::-webkit-clear-button {
+  display: none !important;
+  -webkit-appearance: none !important;
+}
+
