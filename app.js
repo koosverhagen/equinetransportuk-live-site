@@ -8981,79 +8981,36 @@ if (document.readyState === "loading") {
 }
 
 /* ======================================================
-   DARK KEYNOTE V32 — white DOB calendar overlay icon
+   LIVE V71 — remove obsolete DOB calendar overlay icon
+   The native date input already has its own small picker icon.
 ====================================================== */
 
-function initDobCalendarWhiteIcon() {
+function removeDobCalendarOverlayIcon() {
+  document.querySelectorAll(".dob-calendar-icon").forEach((icon) => {
+    icon.remove();
+  });
+
+  document.querySelectorAll(".dob-calendar-wrap").forEach((wrap) => {
+    wrap.classList.remove("dob-calendar-wrap");
+  });
+
   const input = document.getElementById("customer-dob");
-  if (!input || input.dataset.dobIconReady === "true") return;
+  const shell = input?.closest(".dob-date-shell");
 
-  const parent = input.closest(".form-field") || input.parentElement;
-  if (!parent) return;
+  if (input?.dataset) {
+    delete input.dataset.dobIconReady;
+  }
 
-  input.dataset.dobIconReady = "true";
-  parent.classList.add("dob-calendar-wrap");
-
-  if (!parent.querySelector(".dob-calendar-icon")) {
-    const icon = document.createElement("span");
-    icon.className = "dob-calendar-icon";
-    icon.setAttribute("aria-hidden", "true");
-    icon.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="none">
-        <path d="M7 3v3M17 3v3M4.5 9.2h15M6.2 5.5h11.6c1 0 1.7.8 1.7 1.7v10.6c0 1-.8 1.7-1.7 1.7H6.2c-1 0-1.7-.8-1.7-1.7V7.2c0-1 .8-1.7 1.7-1.7Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    `;
-    parent.appendChild(icon);
+  if (input && shell?.parentNode) {
+    shell.parentNode.insertBefore(input, shell);
+    shell.remove();
   }
 }
 
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initDobCalendarWhiteIcon);
+  document.addEventListener("DOMContentLoaded", removeDobCalendarOverlayIcon);
 } else {
-  initDobCalendarWhiteIcon();
-}
-
-/* ======================================================
-   DARK KEYNOTE V33 — centre DOB calendar icon in input
-====================================================== */
-
-function initDobCalendarWhiteIconV33() {
-  const input = document.getElementById("customer-dob");
-  if (!input) return;
-
-  let shell = input.closest(".dob-date-shell");
-
-  if (!shell) {
-    shell = document.createElement("span");
-    shell.className = "dob-date-shell";
-    input.parentNode.insertBefore(shell, input);
-    shell.appendChild(input);
-  }
-
-  let icon =
-    shell.querySelector(".dob-calendar-icon") ||
-    input.closest(".form-field")?.querySelector(".dob-calendar-icon");
-
-  if (!icon) {
-    icon = document.createElement("span");
-    icon.className = "dob-calendar-icon";
-    icon.setAttribute("aria-hidden", "true");
-    icon.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="none">
-        <path d="M7 3v3M17 3v3M4.5 9.2h15M6.2 5.5h11.6c1 0 1.7.8 1.7 1.7v10.6c0 1-.8 1.7-1.7 1.7H6.2c-1 0-1.7-.8-1.7-1.7V7.2c0-1 .8-1.7 1.7-1.7Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    `;
-  }
-
-  if (icon.parentElement !== shell) {
-    shell.appendChild(icon);
-  }
-}
-
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initDobCalendarWhiteIconV33);
-} else {
-  initDobCalendarWhiteIconV33();
+  removeDobCalendarOverlayIcon();
 }
 
 /* ======================================================

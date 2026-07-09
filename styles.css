@@ -5155,3 +5155,29 @@ textarea {
 #mobile-preview {
   display: none !important;
 }
+
+/* ======================================================
+   LIVE V71 — remove obsolete DOB calendar overlay icon
+   Keeps the small native browser date picker icon only.
+====================================================== */
+
+.dob-calendar-icon {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  max-width: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.dob-date-shell {
+  display: block !important;
+  width: 100% !important;
+}
+
+.dob-date-shell #customer-dob {
+  width: 100% !important;
+}
+
