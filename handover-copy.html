@@ -75,6 +75,89 @@
         color: var(--bad);
       }
 
+      .status.ok {
+        background: #ecfdf3;
+        border-color: #bbf7d0;
+        color: var(--green);
+      }
+
+      .customer-sign-panel.hidden {
+        display: none !important;
+      }
+
+      .customer-sign-panel {
+        width: min(900px, calc(100vw - 24px));
+        margin: 18px auto;
+        background: #ffffff;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 18px;
+        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+      }
+
+      .customer-sign-panel h2 {
+        margin: 0 0 8px;
+        font-size: 22px;
+        line-height: 1.15;
+      }
+
+      .customer-sign-panel p {
+        margin: 0 0 14px;
+        color: var(--muted);
+        font-weight: 700;
+        line-height: 1.45;
+      }
+
+      .customer-sign-canvas-wrap {
+        width: 100%;
+        height: 190px;
+        background: #ffffff;
+        border: 2px solid #111827;
+        border-radius: 14px;
+        overflow: hidden;
+        touch-action: none;
+      }
+
+      #customer-signature-canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+        touch-action: none;
+      }
+
+      .customer-sign-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .customer-sign-status {
+        min-height: 18px;
+        margin-top: 10px;
+        font-size: 14px;
+        font-weight: 800;
+        color: var(--muted);
+      }
+
+      .customer-sign-status.ok {
+        color: var(--green);
+      }
+
+      .customer-sign-status.bad {
+        color: var(--bad);
+      }
+
+      @media screen and (max-width: 760px) {
+        .customer-sign-actions {
+          grid-template-columns: 1fr;
+        }
+
+        .customer-sign-canvas-wrap {
+          height: 170px;
+        }
+      }
+
       .report-shell {
         display: none;
       }
@@ -504,7 +587,8 @@
         }
 
         .top-actions,
-        #status {
+        #status,
+        #customer-sign-panel {
           display: none !important;
         }
 
@@ -907,7 +991,28 @@
       </button>
     </div>
 
-    <div id="status" class="status">Loading signed handover report…</div>
+    <div id="status" class="status">Loading handover report…</div>
+
+    <section id="customer-sign-panel" class="customer-sign-panel hidden">
+      <h2>Sign handover report</h2>
+      <p>
+        Please review the handover / damage report below. If everything is correct,
+        sign in the box and press <strong>Submit signature</strong>.
+      </p>
+
+      <div class="customer-sign-canvas-wrap">
+        <canvas id="customer-signature-canvas"></canvas>
+      </div>
+
+      <div class="customer-sign-actions">
+        <button class="btn" type="button" id="customer-sign-clear">Clear</button>
+        <button class="btn primary" type="button" id="customer-sign-submit">
+          Submit signature
+        </button>
+      </div>
+
+      <div id="customer-sign-status" class="customer-sign-status"></div>
+    </section>
 
     <main id="report" class="report-shell"></main>
 
@@ -917,6 +1022,14 @@
 
       const statusEl = document.getElementById("status");
       const reportEl = document.getElementById("report");
+      const customerSignPanel = document.getElementById("customer-sign-panel");
+      const customerSignCanvas = document.getElementById("customer-signature-canvas");
+      const customerSignClear = document.getElementById("customer-sign-clear");
+      const customerSignSubmit = document.getElementById("customer-sign-submit");
+      const customerSignStatus = document.getElementById("customer-sign-status");
+
+      let latestReportData = null;
+      let customerSignaturePad = null;
 
       function escapeHtml(value) {
         return String(value ?? "")
@@ -931,6 +1044,193 @@
         statusEl.textContent = message;
         statusEl.className = `status ${type}`;
       }
+
+      function setCustomerSignStatus(message, type = "") {
+        if (!customerSignStatus) return;
+        customerSignStatus.textContent = message || "";
+        customerSignStatus.className = `customer-sign-status ${type}`;
+      }
+
+      function createCustomerSignaturePad(canvas) {
+        if (!canvas) return null;
+
+        const ctx = canvas.getContext("2d");
+        let drawing = false;
+        let hasSignature = false;
+        let last = null;
+
+        function resize() {
+          const rect = canvas.getBoundingClientRect();
+          const ratio = Math.max(window.devicePixelRatio || 1, 1);
+          const previous = hasSignature ? canvas.toDataURL("image/png") : "";
+
+          canvas.width = Math.max(1, Math.floor(rect.width * ratio));
+          canvas.height = Math.max(1, Math.floor(rect.height * ratio));
+
+          ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+          ctx.lineCap = "round";
+          ctx.lineJoin = "round";
+          ctx.strokeStyle = "#111827";
+          ctx.lineWidth = 3;
+
+          if (previous) {
+            const img = new Image();
+            img.onload = () => ctx.drawImage(img, 0, 0, rect.width, rect.height);
+            img.src = previous;
+          }
+        }
+
+        function pointFromEvent(event) {
+          const rect = canvas.getBoundingClientRect();
+          const touch = event.touches?.[0] || event.changedTouches?.[0];
+          const clientX = touch ? touch.clientX : event.clientX;
+          const clientY = touch ? touch.clientY : event.clientY;
+
+          return {
+            x: clientX - rect.left,
+            y: clientY - rect.top,
+          };
+        }
+
+        function start(event) {
+          event.preventDefault();
+          drawing = true;
+          hasSignature = true;
+          last = pointFromEvent(event);
+        }
+
+        function move(event) {
+          if (!drawing) return;
+          event.preventDefault();
+          const point = pointFromEvent(event);
+          ctx.beginPath();
+          ctx.moveTo(last.x, last.y);
+          ctx.lineTo(point.x, point.y);
+          ctx.stroke();
+          last = point;
+        }
+
+        function stop(event) {
+          if (!drawing) return;
+          event?.preventDefault?.();
+          drawing = false;
+          last = null;
+        }
+
+        canvas.addEventListener("mousedown", start);
+        canvas.addEventListener("mousemove", move);
+        window.addEventListener("mouseup", stop);
+
+        canvas.addEventListener("touchstart", start, { passive: false });
+        canvas.addEventListener("touchmove", move, { passive: false });
+        canvas.addEventListener("touchend", stop, { passive: false });
+        canvas.addEventListener("touchcancel", stop, { passive: false });
+
+        window.addEventListener("resize", () => setTimeout(resize, 100));
+
+        setTimeout(resize, 50);
+
+        return {
+          clear() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            hasSignature = false;
+          },
+          hasSignature() {
+            return hasSignature;
+          },
+          toDataURL() {
+            return hasSignature ? canvas.toDataURL("image/png") : "";
+          },
+          resize,
+        };
+      }
+
+      function showCustomerSignPanel(canSign) {
+        if (!customerSignPanel) return;
+
+        customerSignPanel.classList.toggle("hidden", !canSign);
+
+        if (canSign) {
+          if (!customerSignaturePad) {
+            customerSignaturePad = createCustomerSignaturePad(customerSignCanvas);
+          } else {
+            setTimeout(() => customerSignaturePad.resize?.(), 50);
+          }
+        }
+      }
+
+      async function submitCustomerSignature() {
+        const token = getToken();
+
+        if (!token) {
+          setCustomerSignStatus("Missing signing token.", "bad");
+          return;
+        }
+
+        if (!customerSignaturePad?.hasSignature?.()) {
+          setCustomerSignStatus("Please sign in the box before submitting.", "bad");
+          return;
+        }
+
+        const originalText = customerSignSubmit?.textContent || "Submit signature";
+
+        if (customerSignSubmit) {
+          customerSignSubmit.disabled = true;
+          customerSignSubmit.textContent = "Submitting…";
+        }
+
+        setCustomerSignStatus("Submitting signature…");
+
+        try {
+          const res = await fetch(`${API_BASE}/api/handover-copy/sign`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              token,
+              customerSignature: customerSignaturePad.toDataURL(),
+            }),
+          });
+
+          const data = await res.json();
+
+          if (!res.ok || data.ok === false) {
+            throw new Error(data?.error || "Could not submit signature.");
+          }
+
+          setCustomerSignStatus(
+            "Thank you — your signature has been submitted. You can now print or save a PDF copy.",
+            "ok",
+          );
+          setStatus("Customer signature submitted. Handover is ready for admin completion.", "ok");
+
+          if (latestReportData?.handover) {
+            latestReportData.handover.customerSignature = data.handover?.customerSignature || customerSignaturePad.toDataURL();
+            latestReportData.handover.customerSignedAt = data.handover?.customerSignedAt || new Date().toISOString();
+            latestReportData.handover.status = data.handover?.status || "customer_signed";
+            latestReportData.handover.canSign = false;
+            await renderReport(latestReportData);
+          }
+
+          showCustomerSignPanel(false);
+        } catch (err) {
+          console.error("Failed to submit customer signature:", err);
+          setCustomerSignStatus(err.message || "Could not submit signature.", "bad");
+        } finally {
+          if (customerSignSubmit) {
+            customerSignSubmit.disabled = false;
+            customerSignSubmit.textContent = originalText;
+          }
+        }
+      }
+
+      customerSignClear?.addEventListener("click", () => {
+        customerSignaturePad?.clear?.();
+        setCustomerSignStatus("");
+      });
+
+      customerSignSubmit?.addEventListener("click", submitCustomerSignature);
 
       function getToken() {
         return new URLSearchParams(window.location.search).get("token") || "";
@@ -1094,6 +1394,7 @@
       }
 
       async function renderReport(data) {
+        latestReportData = data;
         const booking = data.booking || {};
         const handover = data.handover || {};
         const damageImages = await buildAllDamageImages(handover);
@@ -1142,6 +1443,7 @@
 
         const todayText = formatPrintDateOnly(
           handover.completedAt ||
+            handover.customerSignedAt ||
             handover.updatedAt ||
             new Date().toISOString(),
         );
@@ -1354,7 +1656,17 @@
         `;
 
         reportEl.classList.add("ready");
-        setStatus("Signed handover report loaded.");
+
+        const canSign = handover.canSign === true;
+        showCustomerSignPanel(canSign);
+
+        if (canSign) {
+          setStatus("Please review the handover report and sign it below.", "");
+        } else if (handover.status === "customer_signed") {
+          setStatus("Customer signature submitted. Handover is ready for admin completion.", "ok");
+        } else {
+          setStatus("Signed handover report loaded.");
+        }
       }
 
       async function loadReport() {
