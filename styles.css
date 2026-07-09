@@ -5142,3 +5142,44 @@ textarea {
 .mobile-preview {
   display: none !important;
 }
+
+/* ======================================================
+   LIVE V69 — remove oversized calendar SVG signs
+   The whole date field is still clickable; this only removes the
+   custom oversized icon overlays that could render huge in Safari/Chrome.
+====================================================== */
+.apple-date-trigger-icon,
+.dob-calendar-icon {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.apple-date-trigger-icon svg,
+.dob-calendar-icon svg {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 0 !important;
+  max-height: 0 !important;
+}
+
+.apple-date-trigger {
+  padding-right: 16px !important;
+}
+
+.dob-date-shell,
+.dob-calendar-wrap {
+  display: block;
+  width: 100%;
+}
+
