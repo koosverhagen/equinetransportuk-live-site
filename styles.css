@@ -5157,27 +5157,53 @@ textarea {
 }
 
 /* ======================================================
-   LIVE V71 — remove obsolete DOB calendar overlay icon
-   Keeps the small native browser date picker icon only.
+   LIVE V72 — clean date fields
+   Removes oversized calendar symbols and aligns availability fields.
 ====================================================== */
 
-.dob-calendar-icon {
+/* Availability: keep the custom date picker clickable, but remove the ugly icon. */
+.availability-form .apple-date-trigger-icon {
+  display: none !important;
+}
+
+.availability-form .apple-date-trigger {
+  height: 58px !important;
+  min-height: 58px !important;
+  padding: 14px 16px !important;
+  align-items: center !important;
+}
+
+.availability-form #duration-days,
+.availability-form select#duration-days {
+  height: 58px !important;
+  min-height: 58px !important;
+  padding: 14px 16px !important;
+  line-height: 1.2 !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 720px) {
+  .availability-form .apple-date-trigger,
+  .availability-form #duration-days,
+  .availability-form select#duration-days {
+    height: 60px !important;
+    min-height: 60px !important;
+  }
+}
+
+/* Your Details: remove the injected oversized DOB calendar image/icon. */
+.dob-calendar-icon,
+.dob-date-shell .dob-calendar-icon,
+.dob-calendar-wrap .dob-calendar-icon {
   display: none !important;
   width: 0 !important;
   height: 0 !important;
-  max-width: 0 !important;
-  max-height: 0 !important;
-  overflow: hidden !important;
   opacity: 0 !important;
-  pointer-events: none !important;
+  visibility: hidden !important;
 }
 
-.dob-date-shell {
-  display: block !important;
-  width: 100% !important;
-}
-
-.dob-date-shell #customer-dob {
-  width: 100% !important;
+#customer-dob,
+input#customer-dob[type="date"] {
+  background-image: none !important;
 }
 

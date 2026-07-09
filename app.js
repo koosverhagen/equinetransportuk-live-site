@@ -8981,37 +8981,9 @@ if (document.readyState === "loading") {
 }
 
 /* ======================================================
-   LIVE V71 — remove obsolete DOB calendar overlay icon
-   The native date input already has its own small picker icon.
+   LIVE CLEANUP — DOB calendar overlay removed
+   The native date field remains; no extra injected icon.
 ====================================================== */
-
-function removeDobCalendarOverlayIcon() {
-  document.querySelectorAll(".dob-calendar-icon").forEach((icon) => {
-    icon.remove();
-  });
-
-  document.querySelectorAll(".dob-calendar-wrap").forEach((wrap) => {
-    wrap.classList.remove("dob-calendar-wrap");
-  });
-
-  const input = document.getElementById("customer-dob");
-  const shell = input?.closest(".dob-date-shell");
-
-  if (input?.dataset) {
-    delete input.dataset.dobIconReady;
-  }
-
-  if (input && shell?.parentNode) {
-    shell.parentNode.insertBefore(input, shell);
-    shell.remove();
-  }
-}
-
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", removeDobCalendarOverlayIcon);
-} else {
-  removeDobCalendarOverlayIcon();
-}
 
 /* ======================================================
    DARK KEYNOTE V36 — responsive header phone guard
