@@ -118,6 +118,32 @@
         touch-action: none;
       }
 
+      .customer-sign-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin-top: 14px;
+      }
+
+      .customer-sign-card {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 14px;
+        background: #f8fafc;
+      }
+
+      .customer-sign-card h3 {
+        margin: 0 0 6px;
+        font-size: 17px;
+        line-height: 1.15;
+      }
+
+      .customer-sign-card p {
+        margin-bottom: 10px;
+        font-size: 14px;
+      }
+
+      #terms-signature-canvas,
       #customer-signature-canvas {
         width: 100%;
         height: 100%;
@@ -130,6 +156,10 @@
         grid-template-columns: 1fr 1fr;
         gap: 10px;
         margin-top: 12px;
+      }
+
+      .customer-sign-card .customer-sign-actions {
+        grid-template-columns: 1fr;
       }
 
       .customer-sign-status {
@@ -149,6 +179,10 @@
       }
 
       @media screen and (max-width: 760px) {
+        .customer-sign-grid {
+          grid-template-columns: 1fr;
+        }
+
         .customer-sign-actions {
           grid-template-columns: 1fr;
         }
@@ -997,17 +1031,36 @@
       <h2>Sign handover report</h2>
       <p>
         Please review the handover / damage report below. If everything is correct,
-        sign in the box and press <strong>Submit signature</strong>.
+        add both signatures and press <strong>Submit signatures</strong>.
       </p>
 
-      <div class="customer-sign-canvas-wrap">
-        <canvas id="customer-signature-canvas"></canvas>
+      <div class="customer-sign-grid">
+        <div class="customer-sign-card">
+          <h3>Terms &amp; Conditions signature</h3>
+          <p>I accept the hire terms and conditions for this booking.</p>
+          <div class="customer-sign-canvas-wrap">
+            <canvas id="terms-signature-canvas"></canvas>
+          </div>
+          <div class="customer-sign-actions">
+            <button class="btn" type="button" id="terms-sign-clear">Clear T&amp;C signature</button>
+          </div>
+        </div>
+
+        <div class="customer-sign-card">
+          <h3>Handover / damage report signature</h3>
+          <p>I confirm the handover condition, notes and damage report.</p>
+          <div class="customer-sign-canvas-wrap">
+            <canvas id="customer-signature-canvas"></canvas>
+          </div>
+          <div class="customer-sign-actions">
+            <button class="btn" type="button" id="customer-sign-clear">Clear handover signature</button>
+          </div>
+        </div>
       </div>
 
       <div class="customer-sign-actions">
-        <button class="btn" type="button" id="customer-sign-clear">Clear</button>
         <button class="btn primary" type="button" id="customer-sign-submit">
-          Submit signature
+          Submit signatures
         </button>
       </div>
 
@@ -1023,12 +1076,15 @@
       const statusEl = document.getElementById("status");
       const reportEl = document.getElementById("report");
       const customerSignPanel = document.getElementById("customer-sign-panel");
+      const termsSignCanvas = document.getElementById("terms-signature-canvas");
       const customerSignCanvas = document.getElementById("customer-signature-canvas");
+      const termsSignClear = document.getElementById("terms-sign-clear");
       const customerSignClear = document.getElementById("customer-sign-clear");
       const customerSignSubmit = document.getElementById("customer-sign-submit");
       const customerSignStatus = document.getElementById("customer-sign-status");
 
       let latestReportData = null;
+      let termsSignaturePad = null;
       let customerSignaturePad = null;
 
       function escapeHtml(value) {
@@ -1151,6 +1207,12 @@
         customerSignPanel.classList.toggle("hidden", !canSign);
 
         if (canSign) {
+          if (!termsSignaturePad) {
+            termsSignaturePad = createCustomerSignaturePad(termsSignCanvas);
+          } else {
+            setTimeout(() => termsSignaturePad.resize?.(), 50);
+          }
+
           if (!customerSignaturePad) {
             customerSignaturePad = createCustomerSignaturePad(customerSignCanvas);
           } else {
@@ -1167,19 +1229,24 @@
           return;
         }
 
-        if (!customerSignaturePad?.hasSignature?.()) {
-          setCustomerSignStatus("Please sign in the box before submitting.", "bad");
+        if (!termsSignaturePad?.hasSignature?.()) {
+          setCustomerSignStatus("Please add the Terms & Conditions signature before submitting.", "bad");
           return;
         }
 
-        const originalText = customerSignSubmit?.textContent || "Submit signature";
+        if (!customerSignaturePad?.hasSignature?.()) {
+          setCustomerSignStatus("Please add the handover / damage report signature before submitting.", "bad");
+          return;
+        }
+
+        const originalText = customerSignSubmit?.textContent || "Submit signatures";
 
         if (customerSignSubmit) {
           customerSignSubmit.disabled = true;
           customerSignSubmit.textContent = "Submitting…";
         }
 
-        setCustomerSignStatus("Submitting signature…");
+        setCustomerSignStatus("Submitting signatures…");
 
         try {
           const res = await fetch(`${API_BASE}/api/handover-copy/sign`, {
@@ -1189,6 +1256,7 @@
             },
             body: JSON.stringify({
               token,
+              termsSignature: termsSignaturePad.toDataURL(),
               customerSignature: customerSignaturePad.toDataURL(),
             }),
           });
@@ -1200,12 +1268,14 @@
           }
 
           setCustomerSignStatus(
-            "Thank you — your signature has been submitted. You can now print or save a PDF copy.",
+            "Thank you — both signatures have been submitted. You can now print or save a PDF copy.",
             "ok",
           );
-          setStatus("Customer signature submitted. Handover is ready for admin completion.", "ok");
+          setStatus("Customer signatures submitted. Handover is ready for admin completion.", "ok");
 
           if (latestReportData?.handover) {
+            latestReportData.handover.termsSignature = data.handover?.termsSignature || termsSignaturePad.toDataURL();
+            latestReportData.handover.termsSignedAt = data.handover?.termsSignedAt || new Date().toISOString();
             latestReportData.handover.customerSignature = data.handover?.customerSignature || customerSignaturePad.toDataURL();
             latestReportData.handover.customerSignedAt = data.handover?.customerSignedAt || new Date().toISOString();
             latestReportData.handover.status = data.handover?.status || "customer_signed";
@@ -1224,6 +1294,11 @@
           }
         }
       }
+
+      termsSignClear?.addEventListener("click", () => {
+        termsSignaturePad?.clear?.();
+        setCustomerSignStatus("");
+      });
 
       customerSignClear?.addEventListener("click", () => {
         customerSignaturePad?.clear?.();
@@ -1663,7 +1738,7 @@
         if (canSign) {
           setStatus("Please review the handover report and sign it below.", "");
         } else if (handover.status === "customer_signed") {
-          setStatus("Customer signature submitted. Handover is ready for admin completion.", "ok");
+          setStatus("Customer signatures submitted. Handover is ready for admin completion.", "ok");
         } else {
           setStatus("Signed handover report loaded.");
         }
