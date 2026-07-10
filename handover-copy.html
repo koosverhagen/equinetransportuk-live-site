@@ -178,6 +178,40 @@
         color: var(--bad);
       }
 
+      /* ===============================
+         CUSTOMER SIGNATURE FORM ALIGNMENT
+         Keeps both signing boxes lined up on desktop and full-width on mobile.
+      =============================== */
+
+      .customer-sign-grid {
+        align-items: stretch;
+      }
+
+      .customer-sign-card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+
+      .customer-sign-card h3 {
+        min-height: 40px;
+        display: flex;
+        align-items: flex-start;
+      }
+
+      .customer-sign-card p {
+        min-height: 42px;
+        margin: 0 0 12px;
+      }
+
+      .customer-sign-card .customer-sign-canvas-wrap {
+        margin-top: 0;
+      }
+
+      .customer-sign-card .customer-sign-actions {
+        margin-top: 12px;
+      }
+
       @media screen and (max-width: 760px) {
         .customer-sign-grid {
           grid-template-columns: 1fr;
@@ -187,8 +221,15 @@
           grid-template-columns: 1fr;
         }
 
+        .customer-sign-card h3,
+        .customer-sign-card p {
+          min-height: 0;
+        }
+
         .customer-sign-canvas-wrap {
-          height: 170px;
+          width: 100% !important;
+          height: 180px !important;
+          margin: 12px 0 0 !important;
         }
       }
 
