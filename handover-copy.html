@@ -75,164 +75,6 @@
         color: var(--bad);
       }
 
-      .status.ok {
-        background: #ecfdf3;
-        border-color: #bbf7d0;
-        color: var(--green);
-      }
-
-      .customer-sign-panel.hidden {
-        display: none !important;
-      }
-
-      .customer-sign-panel {
-        width: min(900px, calc(100vw - 24px));
-        margin: 18px auto;
-        background: #ffffff;
-        border: 1px solid var(--line);
-        border-radius: 18px;
-        padding: 18px;
-        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
-      }
-
-      .customer-sign-panel h2 {
-        margin: 0 0 8px;
-        font-size: 22px;
-        line-height: 1.15;
-      }
-
-      .customer-sign-panel p {
-        margin: 0 0 14px;
-        color: var(--muted);
-        font-weight: 700;
-        line-height: 1.45;
-      }
-
-      .customer-sign-canvas-wrap {
-        width: 100%;
-        height: 190px;
-        background: #ffffff;
-        border: 2px solid #111827;
-        border-radius: 14px;
-        overflow: hidden;
-        touch-action: none;
-      }
-
-      .customer-sign-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 14px;
-        margin-top: 14px;
-      }
-
-      .customer-sign-card {
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        padding: 14px;
-        background: #f8fafc;
-      }
-
-      .customer-sign-card h3 {
-        margin: 0 0 6px;
-        font-size: 17px;
-        line-height: 1.15;
-      }
-
-      .customer-sign-card p {
-        margin-bottom: 10px;
-        font-size: 14px;
-      }
-
-      #terms-signature-canvas,
-      #customer-signature-canvas {
-        width: 100%;
-        height: 100%;
-        display: block;
-        touch-action: none;
-      }
-
-      .customer-sign-actions {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin-top: 12px;
-      }
-
-      .customer-sign-card .customer-sign-actions {
-        grid-template-columns: 1fr;
-      }
-
-      .customer-sign-status {
-        min-height: 18px;
-        margin-top: 10px;
-        font-size: 14px;
-        font-weight: 800;
-        color: var(--muted);
-      }
-
-      .customer-sign-status.ok {
-        color: var(--green);
-      }
-
-      .customer-sign-status.bad {
-        color: var(--bad);
-      }
-
-      /* ===============================
-         CUSTOMER SIGNATURE FORM ALIGNMENT
-         Keeps both signing boxes lined up on desktop and full-width on mobile.
-      =============================== */
-
-      .customer-sign-grid {
-        align-items: stretch;
-      }
-
-      .customer-sign-card {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-      }
-
-      .customer-sign-card h3 {
-        min-height: 40px;
-        display: flex;
-        align-items: flex-start;
-      }
-
-      .customer-sign-card p {
-        min-height: 42px;
-        margin: 0 0 12px;
-      }
-
-      .customer-sign-card .customer-sign-canvas-wrap {
-        margin-top: 0;
-      }
-
-      .customer-sign-card .customer-sign-actions {
-        margin-top: 12px;
-      }
-
-      @media screen and (max-width: 760px) {
-        .customer-sign-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .customer-sign-actions {
-          grid-template-columns: 1fr;
-        }
-
-        .customer-sign-card h3,
-        .customer-sign-card p {
-          min-height: 0;
-        }
-
-        .customer-sign-canvas-wrap {
-          width: 100% !important;
-          height: 180px !important;
-          margin: 12px 0 0 !important;
-        }
-      }
-
       .report-shell {
         display: none;
       }
@@ -662,8 +504,7 @@
         }
 
         .top-actions,
-        #status,
-        #customer-sign-panel {
+        #status {
           display: none !important;
         }
 
@@ -1052,6 +893,350 @@
           margin: 14px auto 0 !important;
         }
       }
+
+
+    /* =====================================================
+       HANDOVER PRINT FIT — EXACTLY TWO A4 PAGES
+       Final print overrides; screen/admin layout unchanged.
+    ====================================================== */
+    @page {
+      size: A4;
+      margin: 8mm;
+    }
+
+    @media print {
+      html,
+      body {
+        width: auto !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .page {
+        width: 194mm !important;
+        height: 281mm !important;
+        min-height: 281mm !important;
+        max-height: 281mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        position: relative !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid-page !important;
+        box-shadow: none !important;
+      }
+
+      .page:last-child {
+        page-break-after: auto !important;
+        break-after: auto !important;
+      }
+
+      /* ---------- Page 1: compact but fully readable ---------- */
+      .page-1 {
+        display: block !important;
+      }
+
+      .page-1 .top-row {
+        grid-template-columns: 1fr 30mm !important;
+        gap: 5mm !important;
+        margin-bottom: 3.5mm !important;
+      }
+
+      .page-1 .title {
+        font-size: 14.5pt !important;
+        line-height: 1.04 !important;
+      }
+
+      .page-1 .logo {
+        width: 27mm !important;
+        max-height: 24mm !important;
+        object-fit: contain !important;
+      }
+
+      .page-1 .section-title {
+        margin: 0 0 1.5mm !important;
+        font-size: 11.5pt !important;
+      }
+
+      .page-1 .booking-id-line {
+        grid-template-columns: 34mm 1fr !important;
+        min-height: 6.5mm !important;
+        padding: 1mm 3mm !important;
+        margin-bottom: 2.5mm !important;
+        font-size: 9.2pt !important;
+      }
+
+      .page-1 .booking-id-line strong {
+        padding-left: 0 !important;
+      }
+
+      .page-1 .info-table {
+        margin-bottom: 3mm !important;
+      }
+
+      .page-1 .info-table th {
+        width: 49mm !important;
+        padding: 0.65mm 1.5mm 0.65mm 0 !important;
+        font-size: 9pt !important;
+        line-height: 1.08 !important;
+      }
+
+      .page-1 .info-table td {
+        padding: 0.65mm 0 !important;
+        font-size: 9pt !important;
+        line-height: 1.08 !important;
+      }
+
+      .page-1 .status-grid {
+        gap: 2mm 4mm !important;
+        margin: 2.5mm 0 3mm !important;
+      }
+
+      .page-1 .status-item {
+        grid-template-columns: 35mm 1fr !important;
+        gap: 2mm !important;
+        min-height: 8mm !important;
+        padding: 1mm 2mm !important;
+        border-radius: 1.5mm !important;
+      }
+
+      .page-1 .status-label,
+      .page-1 .status-value {
+        font-size: 8.7pt !important;
+        line-height: 1.05 !important;
+      }
+
+      .page-1 .status-value {
+        gap: 2mm !important;
+      }
+
+      .page-1 .check-pair {
+        gap: 1mm !important;
+      }
+
+      .page-1 .tickbox {
+        width: 5.5mm !important;
+        height: 5.5mm !important;
+        font-size: 12pt !important;
+      }
+
+      .page-1 .dvla-details {
+        gap: 1mm !important;
+        font-size: 7.2pt !important;
+        line-height: 1.05 !important;
+      }
+
+      .page-1 .terms {
+        margin-top: 1.5mm !important;
+      }
+
+      .page-1 .terms h2 {
+        margin: 0 0 1.2mm !important;
+        font-size: 11.5pt !important;
+        line-height: 1.05 !important;
+      }
+
+      .page-1 .terms ul {
+        margin: 0 !important;
+        padding-left: 4mm !important;
+      }
+
+      .page-1 .terms li {
+        margin-bottom: 0.45mm !important;
+        font-size: 8.35pt !important;
+        line-height: 1.1 !important;
+      }
+
+      .page-1 .terms-signature-title {
+        margin: 2mm 0 0.8mm !important;
+        font-size: 10.2pt !important;
+        line-height: 1.05 !important;
+      }
+
+      .page-1 .terms-signature-title + p {
+        margin: 0 0 0.8mm !important;
+        font-size: 8.3pt !important;
+        line-height: 1.08 !important;
+      }
+
+      .page-1 .signature-row {
+        grid-template-columns: 70mm 1fr !important;
+        gap: 6mm !important;
+        margin-top: 0.8mm !important;
+        align-items: start !important;
+      }
+
+      .page-1 .signature-row > div,
+      .page-1 .signature-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+
+      .page-1 .signature-title {
+        margin-bottom: 0.6mm !important;
+        font-size: 8.5pt !important;
+        line-height: 1.05 !important;
+      }
+
+      .page-1 .signature-box img,
+      .page-1 .signature-empty {
+        width: 70mm !important;
+        height: 19mm !important;
+      }
+
+      .page-1 .signature-date {
+        margin-top: 0.5mm !important;
+        font-size: 8.1pt !important;
+        line-height: 1 !important;
+      }
+
+      /* ---------- Page 2: drawings + signature + fixed footer ---------- */
+      .page.page-2 {
+        display: block !important;
+        height: 281mm !important;
+        min-height: 281mm !important;
+        max-height: 281mm !important;
+        padding: 0 0 11mm !important;
+        overflow: hidden !important;
+      }
+
+      .page-2-header {
+        margin-bottom: 1.2mm !important;
+      }
+
+      .page-2-header h1 {
+        margin: 0 0 0.5mm !important;
+        font-size: 13pt !important;
+        line-height: 1.03 !important;
+      }
+
+      .page-2-meta-grid {
+        gap: 0.7mm 8mm !important;
+        margin-bottom: 1.5mm !important;
+        font-size: 9.2pt !important;
+        line-height: 1.05 !important;
+      }
+
+      .page-2-meta-item,
+      .page-2-meta-item.wide {
+        grid-template-columns: 27mm 1fr !important;
+        gap: 2mm !important;
+      }
+
+      .comments-block {
+        margin-bottom: 1.5mm !important;
+      }
+
+      .comments-block h2 {
+        margin: 0 0 0.4mm !important;
+        font-size: 10.5pt !important;
+        line-height: 1.03 !important;
+      }
+
+      .comments-text {
+        min-height: 3mm !important;
+        max-height: 8mm !important;
+        overflow: hidden !important;
+        font-size: 8.8pt !important;
+        line-height: 1.05 !important;
+      }
+
+      .page-2 .damage-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 2mm 4mm !important;
+        margin-top: 8mm !important;
+      }
+
+      .page-2 .damage-cell,
+      .page-2 .damage-image-wrap {
+        min-height: 0 !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+
+      .page-2 .damage-cell.side img {
+        width: 100% !important;
+        height: 55mm !important;
+        object-fit: contain !important;
+      }
+
+      .page-2 .damage-cell.front-rear img {
+        width: 100% !important;
+        height: 69mm !important;
+        object-fit: contain !important;
+      }
+
+      .page-2 .missing-drawing {
+        height: 36mm !important;
+        font-size: 8pt !important;
+      }
+
+      .page-2 .bottom-row {
+        grid-template-columns: 74mm 74mm !important;
+        gap: 10mm !important;
+        margin-top: 7mm !important;
+        padding-top: 0 !important;
+      }
+
+      .page-2 .bottom-row > div {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+
+      .page-2 .damage-cell.fuel {
+        padding-top: 4mm !important;
+      }
+
+      .page-2 .damage-cell.fuel img {
+        width: 74mm !important;
+        height: 27mm !important;
+      }
+
+      .page-2 .signature-title {
+        margin-bottom: 0.6mm !important;
+        font-size: 8.6pt !important;
+        line-height: 1 !important;
+      }
+
+      .page-2 .signature-box img,
+      .page-2 .signature-empty {
+        width: 74mm !important;
+        height: 27mm !important;
+      }
+
+      .page-2 .signature-date {
+        margin-top: 0.5mm !important;
+        font-size: 8.1pt !important;
+        line-height: 1 !important;
+      }
+
+      .page-2 .footer {
+        position: absolute !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        min-height: 9mm !important;
+        margin: 0 !important;
+        padding: 1mm 30mm 0 0 !important;
+        display: flex !important;
+        align-items: end !important;
+        font-size: 8.2pt !important;
+        line-height: 1 !important;
+      }
+
+      .page-2 .footer img {
+        width: 25mm !important;
+        right: 0 !important;
+        bottom: 0 !important;
+      }
+    }
+
     </style>
   </head>
 
@@ -1066,47 +1251,7 @@
       </button>
     </div>
 
-    <div id="status" class="status">Loading handover report…</div>
-
-    <section id="customer-sign-panel" class="customer-sign-panel hidden">
-      <h2>Sign handover report</h2>
-      <p>
-        Please review the handover / damage report below. If everything is correct,
-        add both signatures and press <strong>Submit signatures</strong>.
-      </p>
-
-      <div class="customer-sign-grid">
-        <div class="customer-sign-card">
-          <h3>Terms &amp; Conditions signature</h3>
-          <p>I accept the hire terms and conditions for this booking.</p>
-          <div class="customer-sign-canvas-wrap">
-            <canvas id="terms-signature-canvas"></canvas>
-          </div>
-          <div class="customer-sign-actions">
-            <button class="btn" type="button" id="terms-sign-clear">Clear T&amp;C signature</button>
-          </div>
-        </div>
-
-        <div class="customer-sign-card">
-          <h3>Handover / damage report signature</h3>
-          <p>I confirm the handover condition, notes and damage report.</p>
-          <div class="customer-sign-canvas-wrap">
-            <canvas id="customer-signature-canvas"></canvas>
-          </div>
-          <div class="customer-sign-actions">
-            <button class="btn" type="button" id="customer-sign-clear">Clear handover signature</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="customer-sign-actions">
-        <button class="btn primary" type="button" id="customer-sign-submit">
-          Submit signatures
-        </button>
-      </div>
-
-      <div id="customer-sign-status" class="customer-sign-status"></div>
-    </section>
+    <div id="status" class="status">Loading signed handover report…</div>
 
     <main id="report" class="report-shell"></main>
 
@@ -1116,17 +1261,6 @@
 
       const statusEl = document.getElementById("status");
       const reportEl = document.getElementById("report");
-      const customerSignPanel = document.getElementById("customer-sign-panel");
-      const termsSignCanvas = document.getElementById("terms-signature-canvas");
-      const customerSignCanvas = document.getElementById("customer-signature-canvas");
-      const termsSignClear = document.getElementById("terms-sign-clear");
-      const customerSignClear = document.getElementById("customer-sign-clear");
-      const customerSignSubmit = document.getElementById("customer-sign-submit");
-      const customerSignStatus = document.getElementById("customer-sign-status");
-
-      let latestReportData = null;
-      let termsSignaturePad = null;
-      let customerSignaturePad = null;
 
       function escapeHtml(value) {
         return String(value ?? "")
@@ -1141,212 +1275,6 @@
         statusEl.textContent = message;
         statusEl.className = `status ${type}`;
       }
-
-      function setCustomerSignStatus(message, type = "") {
-        if (!customerSignStatus) return;
-        customerSignStatus.textContent = message || "";
-        customerSignStatus.className = `customer-sign-status ${type}`;
-      }
-
-      function createCustomerSignaturePad(canvas) {
-        if (!canvas) return null;
-
-        const ctx = canvas.getContext("2d");
-        let drawing = false;
-        let hasSignature = false;
-        let last = null;
-
-        function resize() {
-          const rect = canvas.getBoundingClientRect();
-          const ratio = Math.max(window.devicePixelRatio || 1, 1);
-          const previous = hasSignature ? canvas.toDataURL("image/png") : "";
-
-          canvas.width = Math.max(1, Math.floor(rect.width * ratio));
-          canvas.height = Math.max(1, Math.floor(rect.height * ratio));
-
-          ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-          ctx.lineCap = "round";
-          ctx.lineJoin = "round";
-          ctx.strokeStyle = "#111827";
-          ctx.lineWidth = 3;
-
-          if (previous) {
-            const img = new Image();
-            img.onload = () => ctx.drawImage(img, 0, 0, rect.width, rect.height);
-            img.src = previous;
-          }
-        }
-
-        function pointFromEvent(event) {
-          const rect = canvas.getBoundingClientRect();
-          const touch = event.touches?.[0] || event.changedTouches?.[0];
-          const clientX = touch ? touch.clientX : event.clientX;
-          const clientY = touch ? touch.clientY : event.clientY;
-
-          return {
-            x: clientX - rect.left,
-            y: clientY - rect.top,
-          };
-        }
-
-        function start(event) {
-          event.preventDefault();
-          drawing = true;
-          hasSignature = true;
-          last = pointFromEvent(event);
-        }
-
-        function move(event) {
-          if (!drawing) return;
-          event.preventDefault();
-          const point = pointFromEvent(event);
-          ctx.beginPath();
-          ctx.moveTo(last.x, last.y);
-          ctx.lineTo(point.x, point.y);
-          ctx.stroke();
-          last = point;
-        }
-
-        function stop(event) {
-          if (!drawing) return;
-          event?.preventDefault?.();
-          drawing = false;
-          last = null;
-        }
-
-        canvas.addEventListener("mousedown", start);
-        canvas.addEventListener("mousemove", move);
-        window.addEventListener("mouseup", stop);
-
-        canvas.addEventListener("touchstart", start, { passive: false });
-        canvas.addEventListener("touchmove", move, { passive: false });
-        canvas.addEventListener("touchend", stop, { passive: false });
-        canvas.addEventListener("touchcancel", stop, { passive: false });
-
-        window.addEventListener("resize", () => setTimeout(resize, 100));
-
-        setTimeout(resize, 50);
-
-        return {
-          clear() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            hasSignature = false;
-          },
-          hasSignature() {
-            return hasSignature;
-          },
-          toDataURL() {
-            return hasSignature ? canvas.toDataURL("image/png") : "";
-          },
-          resize,
-        };
-      }
-
-      function showCustomerSignPanel(canSign) {
-        if (!customerSignPanel) return;
-
-        customerSignPanel.classList.toggle("hidden", !canSign);
-
-        if (canSign) {
-          if (!termsSignaturePad) {
-            termsSignaturePad = createCustomerSignaturePad(termsSignCanvas);
-          } else {
-            setTimeout(() => termsSignaturePad.resize?.(), 50);
-          }
-
-          if (!customerSignaturePad) {
-            customerSignaturePad = createCustomerSignaturePad(customerSignCanvas);
-          } else {
-            setTimeout(() => customerSignaturePad.resize?.(), 50);
-          }
-        }
-      }
-
-      async function submitCustomerSignature() {
-        const token = getToken();
-
-        if (!token) {
-          setCustomerSignStatus("Missing signing token.", "bad");
-          return;
-        }
-
-        if (!termsSignaturePad?.hasSignature?.()) {
-          setCustomerSignStatus("Please add the Terms & Conditions signature before submitting.", "bad");
-          return;
-        }
-
-        if (!customerSignaturePad?.hasSignature?.()) {
-          setCustomerSignStatus("Please add the handover / damage report signature before submitting.", "bad");
-          return;
-        }
-
-        const originalText = customerSignSubmit?.textContent || "Submit signatures";
-
-        if (customerSignSubmit) {
-          customerSignSubmit.disabled = true;
-          customerSignSubmit.textContent = "Submitting…";
-        }
-
-        setCustomerSignStatus("Submitting signatures…");
-
-        try {
-          const res = await fetch(`${API_BASE}/api/handover-copy/sign`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              token,
-              termsSignature: termsSignaturePad.toDataURL(),
-              customerSignature: customerSignaturePad.toDataURL(),
-            }),
-          });
-
-          const data = await res.json();
-
-          if (!res.ok || data.ok === false) {
-            throw new Error(data?.error || "Could not submit signature.");
-          }
-
-          setCustomerSignStatus(
-            "Thank you — both signatures have been submitted. You can now print or save a PDF copy.",
-            "ok",
-          );
-          setStatus("Customer signatures submitted. Handover is ready for admin completion.", "ok");
-
-          if (latestReportData?.handover) {
-            latestReportData.handover.termsSignature = data.handover?.termsSignature || termsSignaturePad.toDataURL();
-            latestReportData.handover.termsSignedAt = data.handover?.termsSignedAt || new Date().toISOString();
-            latestReportData.handover.customerSignature = data.handover?.customerSignature || customerSignaturePad.toDataURL();
-            latestReportData.handover.customerSignedAt = data.handover?.customerSignedAt || new Date().toISOString();
-            latestReportData.handover.status = data.handover?.status || "customer_signed";
-            latestReportData.handover.canSign = false;
-            await renderReport(latestReportData);
-          }
-
-          showCustomerSignPanel(false);
-        } catch (err) {
-          console.error("Failed to submit customer signature:", err);
-          setCustomerSignStatus(err.message || "Could not submit signature.", "bad");
-        } finally {
-          if (customerSignSubmit) {
-            customerSignSubmit.disabled = false;
-            customerSignSubmit.textContent = originalText;
-          }
-        }
-      }
-
-      termsSignClear?.addEventListener("click", () => {
-        termsSignaturePad?.clear?.();
-        setCustomerSignStatus("");
-      });
-
-      customerSignClear?.addEventListener("click", () => {
-        customerSignaturePad?.clear?.();
-        setCustomerSignStatus("");
-      });
-
-      customerSignSubmit?.addEventListener("click", submitCustomerSignature);
 
       function getToken() {
         return new URLSearchParams(window.location.search).get("token") || "";
@@ -1510,7 +1438,6 @@
       }
 
       async function renderReport(data) {
-        latestReportData = data;
         const booking = data.booking || {};
         const handover = data.handover || {};
         const damageImages = await buildAllDamageImages(handover);
@@ -1559,7 +1486,6 @@
 
         const todayText = formatPrintDateOnly(
           handover.completedAt ||
-            handover.customerSignedAt ||
             handover.updatedAt ||
             new Date().toISOString(),
         );
@@ -1772,17 +1698,7 @@
         `;
 
         reportEl.classList.add("ready");
-
-        const canSign = handover.canSign === true;
-        showCustomerSignPanel(canSign);
-
-        if (canSign) {
-          setStatus("Please review the handover report and sign it below.", "");
-        } else if (handover.status === "customer_signed") {
-          setStatus("Customer signatures submitted. Handover is ready for admin completion.", "ok");
-        } else {
-          setStatus("Signed handover report loaded.");
-        }
+        setStatus("Signed handover report loaded.");
       }
 
       async function loadReport() {
