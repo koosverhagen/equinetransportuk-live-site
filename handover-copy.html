@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Signed Handover Report | Equine Transport UK</title>
+    <meta name="handover-copy-version" content="customer-signing-v5" />
 
     <style>
       :root {
@@ -893,6 +894,161 @@
           margin: 14px auto 0 !important;
         }
       }
+
+      /* ===============================
+         CUSTOMER SIGNING MODE
+      =============================== */
+
+      .signing-panel.hidden { display: none !important; }
+
+      .signing-panel {
+        width: min(900px, calc(100vw - 24px));
+        margin: 22px auto 34px;
+        padding: 22px;
+        background: #ffffff;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+      }
+
+      .signing-panel h2 {
+        margin: 0 0 8px;
+        font-size: 25px;
+        line-height: 1.15;
+      }
+
+      .signing-intro {
+        margin: 0 0 18px;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.5;
+        font-weight: 700;
+      }
+
+      .signature-pad-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+      }
+
+      .signature-pad-card {
+        padding: 16px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: #f8fafc;
+      }
+
+      .signature-pad-card h3 {
+        margin: 0 0 6px;
+        font-size: 17px;
+        line-height: 1.2;
+      }
+
+      .signature-pad-card p {
+        min-height: 42px;
+        margin: 0 0 10px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      .customer-signature-canvas {
+        display: block;
+        width: 100%;
+        height: 180px;
+        border: 2px solid #cbd5e1;
+        border-radius: 12px;
+        background: #ffffff;
+        cursor: crosshair;
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      .signature-pad-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 9px;
+      }
+
+      .signature-clear-btn {
+        min-height: 38px;
+        padding: 0 14px;
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        background: #ffffff;
+        color: #111827;
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .signing-confirmation {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin: 18px 0 14px;
+        padding: 14px;
+        border: 1px solid #bfdbfe;
+        border-radius: 14px;
+        background: #eff6ff;
+        color: #1e3a8a;
+        font-size: 14px;
+        line-height: 1.45;
+        font-weight: 800;
+      }
+
+      .signing-confirmation input {
+        width: 20px;
+        height: 20px;
+        margin: 1px 0 0;
+        flex: 0 0 auto;
+      }
+
+      .submit-signatures-btn {
+        width: 100%;
+        min-height: 52px;
+        border: none;
+        border-radius: 14px;
+        background: var(--blue);
+        color: #ffffff;
+        font-size: 17px;
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .submit-signatures-btn:disabled {
+        opacity: 0.55;
+        cursor: wait;
+      }
+
+      .signing-message {
+        min-height: 22px;
+        margin: 12px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.4;
+        font-weight: 800;
+      }
+
+      .signing-message.bad { color: var(--bad); }
+      .signing-message.ok { color: var(--green); }
+
+      @media screen and (max-width: 760px) {
+        .signing-panel {
+          width: calc(100% - 20px);
+          margin: 12px auto 24px;
+          padding: 16px;
+          border-radius: 18px;
+        }
+        .signing-panel h2 { font-size: 22px; }
+        .signature-pad-grid { grid-template-columns: 1fr; gap: 14px; }
+        .signature-pad-card { padding: 13px; }
+        .signature-pad-card p { min-height: auto; }
+        .customer-signature-canvas { height: 170px; }
+      }
+
+      @media print { .signing-panel { display: none !important; } }
+
     </style>
   </head>
 
@@ -911,12 +1067,239 @@
 
     <main id="report" class="report-shell"></main>
 
+    <section id="signing-panel" class="signing-panel hidden" aria-labelledby="signing-title">
+      <h2 id="signing-title">Sign your handover report</h2>
+      <p class="signing-intro">
+        Please review the report above, then sign both boxes below. Use your finger
+        on a phone or tablet, or your mouse on a computer.
+      </p>
+
+      <div class="signature-pad-grid">
+        <article class="signature-pad-card">
+          <h3>1. Terms &amp; Conditions signature</h3>
+          <p>Sign to confirm that you have read and accept the Terms &amp; Conditions shown in this report.</p>
+          <canvas id="terms-signature-canvas" class="customer-signature-canvas" aria-label="Terms and Conditions signature pad"></canvas>
+          <div class="signature-pad-actions">
+            <button id="clear-terms-signature" class="signature-clear-btn" type="button">Clear signature</button>
+          </div>
+        </article>
+
+        <article class="signature-pad-card">
+          <h3>2. Handover / damage report signature</h3>
+          <p>Sign to confirm that you have reviewed the vehicle condition, fuel level and comments in this handover report.</p>
+          <canvas id="customer-signature-canvas" class="customer-signature-canvas" aria-label="Handover and damage report signature pad"></canvas>
+          <div class="signature-pad-actions">
+            <button id="clear-customer-signature" class="signature-clear-btn" type="button">Clear signature</button>
+          </div>
+        </article>
+      </div>
+
+      <label class="signing-confirmation">
+        <input id="signing-confirm-checkbox" type="checkbox" />
+        <span>I confirm that I am the hirer/customer named in this report and that the two signatures above are mine.</span>
+      </label>
+
+      <button id="submit-signatures-btn" class="submit-signatures-btn" type="button">Submit both signatures</button>
+      <p id="signing-message" class="signing-message" role="status" aria-live="polite"></p>
+    </section>
+
+
     <script>
       const API_BASE = "https://equine-bookings-api.kverhagen.workers.dev";
       const LOGO_SRC = "https://www.equinetransportuk.com/images/logo.png";
 
       const statusEl = document.getElementById("status");
       const reportEl = document.getElementById("report");
+
+
+      const signingPanelEl = document.getElementById("signing-panel");
+      const termsSignatureCanvas = document.getElementById("terms-signature-canvas");
+      const customerSignatureCanvas = document.getElementById("customer-signature-canvas");
+      const clearTermsSignatureBtn = document.getElementById("clear-terms-signature");
+      const clearCustomerSignatureBtn = document.getElementById("clear-customer-signature");
+      const signingConfirmCheckbox = document.getElementById("signing-confirm-checkbox");
+      const submitSignaturesBtn = document.getElementById("submit-signatures-btn");
+      const signingMessageEl = document.getElementById("signing-message");
+
+      let termsSignaturePad = null;
+      let customerSignaturePad = null;
+
+      function setSigningMessage(message, type = "") {
+        signingMessageEl.textContent = message || "";
+        signingMessageEl.className = `signing-message ${type}`.trim();
+      }
+
+      function createSignaturePad(canvas) {
+        const ctx = canvas.getContext("2d");
+        let drawing = false;
+        let empty = true;
+        let lastPoint = null;
+
+        function point(event) {
+          const rect = canvas.getBoundingClientRect();
+          return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+        }
+
+        function prepare() {
+          const rect = canvas.getBoundingClientRect();
+          const ratio = Math.max(1, Math.min(window.devicePixelRatio || 1, 3));
+          canvas.width = Math.max(1, Math.round(rect.width * ratio));
+          canvas.height = Math.max(1, Math.round(rect.height * ratio));
+          ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+          ctx.lineCap = "round";
+          ctx.lineJoin = "round";
+          ctx.strokeStyle = "#111827";
+          ctx.fillStyle = "#111827";
+          ctx.lineWidth = 3;
+        }
+
+        function start(event) {
+          event.preventDefault();
+          canvas.setPointerCapture?.(event.pointerId);
+          drawing = true;
+          lastPoint = point(event);
+          ctx.beginPath();
+          ctx.arc(lastPoint.x, lastPoint.y, 1.5, 0, Math.PI * 2);
+          ctx.fill();
+          empty = false;
+        }
+
+        function move(event) {
+          if (!drawing || !lastPoint) return;
+          event.preventDefault();
+          const events = typeof event.getCoalescedEvents === "function" ? event.getCoalescedEvents() : [event];
+          events.forEach((item) => {
+            const next = point(item);
+            ctx.beginPath();
+            ctx.moveTo(lastPoint.x, lastPoint.y);
+            ctx.lineTo(next.x, next.y);
+            ctx.stroke();
+            lastPoint = next;
+          });
+          empty = false;
+        }
+
+        function stop(event) {
+          if (!drawing) return;
+          event?.preventDefault?.();
+          drawing = false;
+          lastPoint = null;
+          try { canvas.releasePointerCapture?.(event.pointerId); } catch {}
+        }
+
+        function clear() {
+          ctx.save();
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.restore();
+          empty = true;
+          drawing = false;
+          lastPoint = null;
+        }
+
+        function load(dataUrl) {
+          if (!dataUrl || !String(dataUrl).startsWith("data:image/")) return;
+          const image = new Image();
+          image.onload = () => {
+            const rect = canvas.getBoundingClientRect();
+            ctx.clearRect(0, 0, rect.width, rect.height);
+            ctx.drawImage(image, 0, 0, rect.width, rect.height);
+            empty = false;
+          };
+          image.src = dataUrl;
+        }
+
+        canvas.addEventListener("pointerdown", start);
+        canvas.addEventListener("pointermove", move);
+        canvas.addEventListener("pointerup", stop);
+        canvas.addEventListener("pointercancel", stop);
+        canvas.addEventListener("pointerleave", (event) => {
+          if (drawing && event.buttons === 0) stop(event);
+        });
+
+        prepare();
+        return { clear, load, isEmpty: () => empty, toDataUrl: () => canvas.toDataURL("image/png") };
+      }
+
+      function hideSigningPanel() {
+        signingPanelEl.classList.add("hidden");
+        setSigningMessage("");
+      }
+
+      async function showSigningPanel(data) {
+        signingPanelEl.classList.remove("hidden");
+        signingConfirmCheckbox.checked = false;
+        submitSignaturesBtn.disabled = false;
+        submitSignaturesBtn.textContent = "Submit both signatures";
+        setSigningMessage("");
+
+        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        termsSignaturePad = createSignaturePad(termsSignatureCanvas);
+        customerSignaturePad = createSignaturePad(customerSignatureCanvas);
+
+        if (data?.handover?.termsSignature) termsSignaturePad.load(data.handover.termsSignature);
+        if (data?.handover?.customerSignature) customerSignaturePad.load(data.handover.customerSignature);
+
+        signingPanelEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      async function submitCustomerSignatures() {
+        if (!termsSignaturePad || termsSignaturePad.isEmpty()) {
+          setSigningMessage("Please add the Terms & Conditions signature.", "bad");
+          termsSignatureCanvas.scrollIntoView({ behavior: "smooth", block: "center" });
+          return;
+        }
+        if (!customerSignaturePad || customerSignaturePad.isEmpty()) {
+          setSigningMessage("Please add the handover / damage report signature.", "bad");
+          customerSignatureCanvas.scrollIntoView({ behavior: "smooth", block: "center" });
+          return;
+        }
+        if (!signingConfirmCheckbox.checked) {
+          setSigningMessage("Please tick the confirmation box before submitting.", "bad");
+          signingConfirmCheckbox.focus();
+          return;
+        }
+
+        const token = getToken();
+        if (!token) {
+          setSigningMessage("This signing link is missing its token.", "bad");
+          return;
+        }
+
+        submitSignaturesBtn.disabled = true;
+        submitSignaturesBtn.textContent = "Submitting…";
+        setSigningMessage("Submitting your signatures…");
+
+        try {
+          const res = await fetch(`${API_BASE}/api/handover-copy/sign`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              token,
+              termsSignature: termsSignaturePad.toDataUrl(),
+              customerSignature: customerSignaturePad.toDataUrl(),
+            }),
+          });
+
+          const result = await res.json();
+          if (!res.ok || result.ok === false) {
+            throw new Error(result?.error || "Your signatures could not be submitted.");
+          }
+
+          setSigningMessage(result.message || "Thank you. Your signatures have been submitted.", "ok");
+          await loadReport({ preserveSuccessMessage: true, scrollToTop: true });
+        } catch (err) {
+          console.error("Failed to submit handover signatures:", err);
+          setSigningMessage(err.message || "Your signatures could not be submitted.", "bad");
+          submitSignaturesBtn.disabled = false;
+          submitSignaturesBtn.textContent = "Submit both signatures";
+        }
+      }
+
+      clearTermsSignatureBtn.addEventListener("click", () => { termsSignaturePad?.clear(); setSigningMessage(""); });
+      clearCustomerSignatureBtn.addEventListener("click", () => { customerSignaturePad?.clear(); setSigningMessage(""); });
+      submitSignaturesBtn.addEventListener("click", submitCustomerSignatures);
+
 
       function escapeHtml(value) {
         return String(value ?? "")
@@ -1354,13 +1737,13 @@
         `;
 
         reportEl.classList.add("ready");
-        setStatus("Signed handover report loaded.");
       }
 
-      async function loadReport() {
+      async function loadReport(options = {}) {
         const token = getToken();
 
         if (!token) {
+          hideSigningPanel();
           setStatus("This handover copy link is missing a token.", "bad");
           return;
         }
@@ -1377,8 +1760,33 @@
           }
 
           await renderReport(data);
+
+          const isCustomerSigningMode = data.mode === "customer_sign";
+          const canSign = isCustomerSigningMode && data.handover?.canSign === true;
+
+          if (canSign) {
+            await showSigningPanel(data);
+            setStatus("Please review the handover report and add both signatures below.");
+          } else {
+            hideSigningPanel();
+
+            if (isCustomerSigningMode) {
+              setStatus(
+                options.preserveSuccessMessage
+                  ? "Thank you. Your signatures have been submitted successfully."
+                  : "This handover report has already been signed and is now read-only.",
+              );
+            } else {
+              setStatus("Signed handover report loaded.");
+            }
+          }
+
+          if (options.scrollToTop) {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }
         } catch (err) {
           console.error("Failed to load handover report:", err);
+          hideSigningPanel();
           setStatus(err.message || "Could not load handover report.", "bad");
         }
       }
