@@ -5281,16 +5281,16 @@ input#customer-dob[type="date"]::-webkit-clear-button {
 }
 
 /* ======================================================
-   LIVE LIGHT OVERLAY HERO — V2
-   Tighter site width, fully fitting text and reliable live images.
+   LIVE LIGHT OVERLAY HERO — V3 COMPACT
+   Same width as the page content and reduced total height.
 ====================================================== */
 
 .live-light-overlay-hero {
-  padding: 22px 0 16px !important;
+  padding: 18px 0 12px !important;
 }
 
 .live-light-overlay-hero-stage {
-  width: min(1180px, 92vw) !important;
+  width: min(1120px, 92vw) !important;
   margin-inline: auto !important;
 }
 
@@ -5298,14 +5298,14 @@ input#customer-dob[type="date"]::-webkit-clear-button {
 .live-light-overlay-frame {
   position: relative;
   width: 100%;
-  height: clamp(560px, 40vw, 630px);
-  min-height: 560px;
+  height: clamp(455px, 34vw, 515px);
+  min-height: 455px;
 }
 
 .live-light-overlay-frame {
   overflow: hidden;
   border: 1px solid #d7e0ea;
-  border-radius: 28px;
+  border-radius: 26px;
   background:
     #eaf0f7
     url("images/hero1.webp")
@@ -5325,7 +5325,7 @@ input#customer-dob[type="date"]::-webkit-clear-button {
   object-position: center center;
   opacity: 0;
   visibility: visible !important;
-  transform: scale(1.012);
+  transform: scale(1.01);
   transition:
     opacity 0.75s ease,
     transform 4.8s ease;
@@ -5345,17 +5345,17 @@ input#customer-dob[type="date"]::-webkit-clear-button {
     linear-gradient(
       90deg,
       rgba(249, 252, 255, 0.99) 0%,
-      rgba(249, 252, 255, 0.96) 18%,
-      rgba(249, 252, 255, 0.84) 34%,
-      rgba(249, 252, 255, 0.48) 49%,
-      rgba(249, 252, 255, 0.10) 66%,
-      rgba(249, 252, 255, 0.00) 82%
+      rgba(249, 252, 255, 0.96) 19%,
+      rgba(249, 252, 255, 0.84) 35%,
+      rgba(249, 252, 255, 0.45) 50%,
+      rgba(249, 252, 255, 0.08) 67%,
+      rgba(249, 252, 255, 0.00) 83%
     ),
     linear-gradient(
       180deg,
-      rgba(249, 252, 255, 0.06) 0%,
-      rgba(249, 252, 255, 0.00) 62%,
-      rgba(249, 252, 255, 0.20) 100%
+      rgba(249, 252, 255, 0.04) 0%,
+      rgba(249, 252, 255, 0.00) 68%,
+      rgba(249, 252, 255, 0.16) 100%
     );
 }
 
@@ -5363,16 +5363,16 @@ input#customer-dob[type="date"]::-webkit-clear-button {
   position: absolute;
   z-index: 2;
   top: 50%;
-  left: clamp(34px, 4vw, 58px);
-  width: min(500px, 44%);
+  left: clamp(30px, 3.6vw, 48px);
+  width: min(455px, 44%);
   transform: translateY(-50%);
   color: #172232;
 }
 
 .live-light-overlay-copy .kicker {
-  margin: 0 0 16px !important;
+  margin: 0 0 11px !important;
   color: #135fc8 !important;
-  font-size: 12px !important;
+  font-size: 10px !important;
   font-weight: 900 !important;
   letter-spacing: 0.24em !important;
 }
@@ -5381,40 +5381,40 @@ input#customer-dob[type="date"]::-webkit-clear-button {
   max-width: 13ch;
   margin: 0 !important;
   color: #172232;
-  font-size: clamp(42px, 3.8vw, 58px);
-  line-height: 1.02;
+  font-size: clamp(36px, 3.35vw, 49px);
+  line-height: 1.01;
   letter-spacing: -0.052em;
   text-wrap: balance;
 }
 
 .live-light-overlay-copy .hero-rule {
-  width: 70px;
-  height: 4px;
-  margin: 21px 0 18px;
+  width: 58px;
+  height: 3px;
+  margin: 16px 0 14px;
   border-radius: 99px;
   background: #f4d500;
 }
 
 .live-light-overlay-copy .lead {
-  max-width: 48ch;
+  max-width: 47ch;
   margin: 0;
   color: #46576b;
-  font-size: clamp(16px, 1.2vw, 18px);
-  line-height: 1.48;
+  font-size: clamp(14px, 1.08vw, 16px);
+  line-height: 1.43;
 }
 
 .live-light-overlay-copy .hero-cta-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 11px;
-  margin-top: 24px;
+  gap: 9px;
+  margin-top: 18px;
 }
 
 .live-light-overlay-copy .hero-cta-row .btn {
-  min-height: 52px;
-  border-radius: 12px;
-  padding: 0 20px;
-  font-size: 15px;
+  min-height: 46px;
+  border-radius: 11px;
+  padding: 0 17px;
+  font-size: 14px;
   font-weight: 850;
 }
 
@@ -5427,21 +5427,21 @@ input#customer-dob[type="date"]::-webkit-clear-button {
 }
 
 .live-light-overlay-copy .google-mark {
-  margin-right: 7px;
-  font-size: 19px;
+  margin-right: 6px;
+  font-size: 17px;
   font-weight: 900;
 }
 
 .live-light-overlay-frame .hero-slideshow-controls {
   position: absolute;
-  right: 22px;
-  bottom: 20px;
+  right: 18px;
+  bottom: 16px;
   z-index: 3;
   display: flex;
   align-items: center;
-  gap: 10px;
-  min-height: 54px;
-  padding: 6px 9px;
+  gap: 8px;
+  min-height: 48px;
+  padding: 5px 8px;
   border: 1px solid rgba(51, 76, 105, 0.20);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.84);
@@ -5453,15 +5453,15 @@ input#customer-dob[type="date"]::-webkit-clear-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  min-height: 40px;
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
   padding: 0;
   border: 1px solid rgba(51, 76, 105, 0.22);
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.78);
   color: #172232;
-  font-size: 27px;
+  font-size: 24px;
   line-height: 1;
   cursor: pointer;
 }
@@ -5469,13 +5469,13 @@ input#customer-dob[type="date"]::-webkit-clear-button {
 .live-light-overlay-frame .hero-slide-dots {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
 }
 
 .live-light-overlay-frame .hero-slide-dot {
-  width: 9px;
-  height: 9px;
-  min-height: 9px;
+  width: 8px;
+  height: 8px;
+  min-height: 8px;
   padding: 0;
   border: 0;
   border-radius: 999px;
@@ -5487,47 +5487,47 @@ input#customer-dob[type="date"]::-webkit-clear-button {
 }
 
 .live-light-overlay-frame .hero-slide-dot.is-active {
-  width: 28px;
+  width: 24px;
   background: #1f6feb;
 }
 
 @media (max-width: 980px) {
   .live-light-overlay-hero-stage {
-    width: min(900px, calc(100vw - 32px)) !important;
+    width: min(1120px, 92vw) !important;
   }
 
   .live-light-overlay-slideshow,
   .live-light-overlay-frame {
-    height: 620px;
-    min-height: 620px;
+    height: 520px;
+    min-height: 520px;
   }
 
   .live-light-overlay-copy {
-    width: min(470px, 49%);
+    width: min(425px, 48%);
   }
 
   .live-light-overlay-copy h1 {
-    font-size: clamp(39px, 5.2vw, 52px);
+    font-size: clamp(35px, 4.7vw, 45px);
   }
 }
 
 @media (max-width: 760px) {
   .live-light-overlay-hero {
-    padding-top: 14px !important;
+    padding-top: 12px !important;
   }
 
   .live-light-overlay-hero-stage {
-    width: calc(100vw - 24px) !important;
+    width: 92vw !important;
   }
 
   .live-light-overlay-slideshow,
   .live-light-overlay-frame {
-    height: 680px;
-    min-height: 680px;
+    height: 575px;
+    min-height: 575px;
   }
 
   .live-light-overlay-frame {
-    border-radius: 23px;
+    border-radius: 22px;
   }
 
   .live-light-overlay-frame .hero-slide {
@@ -5539,84 +5539,83 @@ input#customer-dob[type="date"]::-webkit-clear-button {
       linear-gradient(
         180deg,
         rgba(249, 252, 255, 0.97) 0%,
-        rgba(249, 252, 255, 0.91) 40%,
-        rgba(249, 252, 255, 0.50) 65%,
-        rgba(249, 252, 255, 0.83) 100%
+        rgba(249, 252, 255, 0.91) 43%,
+        rgba(249, 252, 255, 0.48) 67%,
+        rgba(249, 252, 255, 0.81) 100%
       ),
       linear-gradient(
         90deg,
-        rgba(249, 252, 255, 0.86) 0%,
-        rgba(249, 252, 255, 0.30) 100%
+        rgba(249, 252, 255, 0.84) 0%,
+        rgba(249, 252, 255, 0.28) 100%
       );
   }
 
   .live-light-overlay-copy {
-    top: 28px;
-    right: 24px;
-    left: 24px;
+    top: 24px;
+    right: 21px;
+    left: 21px;
     width: auto;
     transform: none;
   }
 
   .live-light-overlay-copy .kicker {
-    margin-bottom: 13px !important;
-    font-size: 10px !important;
+    margin-bottom: 10px !important;
+    font-size: 9px !important;
   }
 
   .live-light-overlay-copy h1 {
     max-width: 13ch;
-    font-size: clamp(35px, 8vw, 47px);
+    font-size: clamp(31px, 7.6vw, 41px);
   }
 
   .live-light-overlay-copy .hero-rule {
-    width: 58px;
-    height: 3px;
-    margin: 18px 0 15px;
+    width: 52px;
+    margin: 14px 0 12px;
   }
 
   .live-light-overlay-copy .lead {
-    max-width: 45ch;
-    font-size: 15px;
-    line-height: 1.44;
+    max-width: 44ch;
+    font-size: 14px;
+    line-height: 1.4;
   }
 
   .live-light-overlay-copy .hero-cta-row {
-    gap: 9px;
-    margin-top: 19px;
+    gap: 8px;
+    margin-top: 16px;
   }
 
   .live-light-overlay-copy .hero-cta-row .btn {
-    min-height: 48px;
-    padding: 0 16px;
-    font-size: 14px;
+    min-height: 44px;
+    padding: 0 14px;
+    font-size: 13px;
   }
 
   .live-light-overlay-frame .hero-slideshow-controls {
-    right: 16px;
-    bottom: 16px;
+    right: 14px;
+    bottom: 14px;
   }
 }
 
 @media (max-width: 520px) {
   .live-light-overlay-slideshow,
   .live-light-overlay-frame {
-    height: 650px;
-    min-height: 650px;
+    height: 555px;
+    min-height: 555px;
   }
 
   .live-light-overlay-copy {
-    top: 23px;
-    right: 18px;
-    left: 18px;
+    top: 20px;
+    right: 17px;
+    left: 17px;
   }
 
   .live-light-overlay-copy h1 {
     max-width: 12ch;
-    font-size: clamp(32px, 10vw, 42px);
+    font-size: clamp(29px, 9.2vw, 37px);
   }
 
   .live-light-overlay-copy .lead {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .live-light-overlay-copy .hero-cta-row {
