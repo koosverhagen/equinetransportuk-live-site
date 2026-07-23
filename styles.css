@@ -5281,30 +5281,36 @@ input#customer-dob[type="date"]::-webkit-clear-button {
 }
 
 /* ======================================================
-   LIVE LIGHT OVERLAY HERO
-   Light version of the dark-test slideshow-behind-text hero.
+   LIVE LIGHT OVERLAY HERO — V2
+   Tighter site width, fully fitting text and reliable live images.
 ====================================================== */
 
 .live-light-overlay-hero {
-  padding: 22px 0 14px !important;
+  padding: 22px 0 16px !important;
 }
 
 .live-light-overlay-hero-stage {
-  width: min(1600px, calc(100vw - 88px)) !important;
+  width: min(1180px, 92vw) !important;
+  margin-inline: auto !important;
 }
 
 .live-light-overlay-slideshow,
 .live-light-overlay-frame {
   position: relative;
   width: 100%;
-  min-height: clamp(540px, 39vw, 700px);
+  height: clamp(560px, 40vw, 630px);
+  min-height: 560px;
 }
 
 .live-light-overlay-frame {
   overflow: hidden;
   border: 1px solid #d7e0ea;
-  border-radius: 30px;
-  background: #eaf0f7;
+  border-radius: 28px;
+  background:
+    #eaf0f7
+    url("images/hero1.webp")
+    center center / cover
+    no-repeat;
   isolation: isolate;
 }
 
@@ -5312,16 +5318,17 @@ input#customer-dob[type="date"]::-webkit-clear-button {
   position: absolute;
   inset: 0;
   z-index: 0;
-  display: block;
+  display: block !important;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center center;
   opacity: 0;
-  transform: scale(1.015);
+  visibility: visible !important;
+  transform: scale(1.012);
   transition:
-    opacity 0.8s ease,
-    transform 5.2s ease;
+    opacity 0.75s ease,
+    transform 4.8s ease;
 }
 
 .live-light-overlay-frame .hero-slide.is-active {
@@ -5338,17 +5345,17 @@ input#customer-dob[type="date"]::-webkit-clear-button {
     linear-gradient(
       90deg,
       rgba(249, 252, 255, 0.99) 0%,
-      rgba(249, 252, 255, 0.97) 18%,
-      rgba(249, 252, 255, 0.88) 31%,
-      rgba(249, 252, 255, 0.58) 45%,
-      rgba(249, 252, 255, 0.18) 62%,
-      rgba(249, 252, 255, 0.03) 82%
+      rgba(249, 252, 255, 0.96) 18%,
+      rgba(249, 252, 255, 0.84) 34%,
+      rgba(249, 252, 255, 0.48) 49%,
+      rgba(249, 252, 255, 0.10) 66%,
+      rgba(249, 252, 255, 0.00) 82%
     ),
     linear-gradient(
       180deg,
-      rgba(249, 252, 255, 0.10) 0%,
-      rgba(249, 252, 255, 0.02) 58%,
-      rgba(249, 252, 255, 0.34) 100%
+      rgba(249, 252, 255, 0.06) 0%,
+      rgba(249, 252, 255, 0.00) 62%,
+      rgba(249, 252, 255, 0.20) 100%
     );
 }
 
@@ -5356,88 +5363,88 @@ input#customer-dob[type="date"]::-webkit-clear-button {
   position: absolute;
   z-index: 2;
   top: 50%;
-  left: clamp(32px, 4.2vw, 72px);
-  width: min(560px, 43%);
+  left: clamp(34px, 4vw, 58px);
+  width: min(500px, 44%);
   transform: translateY(-50%);
   color: #172232;
 }
 
 .live-light-overlay-copy .kicker {
-  margin: 0 0 22px !important;
+  margin: 0 0 16px !important;
   color: #135fc8 !important;
-  font-size: 13px !important;
+  font-size: 12px !important;
   font-weight: 900 !important;
-  letter-spacing: 0.26em !important;
+  letter-spacing: 0.24em !important;
 }
 
 .live-light-overlay-copy h1 {
-  max-width: 12.5ch;
+  max-width: 13ch;
   margin: 0 !important;
   color: #172232;
-  font-size: clamp(43px, 4.35vw, 70px);
-  line-height: 1.03;
-  letter-spacing: -0.055em;
+  font-size: clamp(42px, 3.8vw, 58px);
+  line-height: 1.02;
+  letter-spacing: -0.052em;
   text-wrap: balance;
 }
 
 .live-light-overlay-copy .hero-rule {
-  width: 88px;
+  width: 70px;
   height: 4px;
-  margin: 30px 0 24px;
+  margin: 21px 0 18px;
   border-radius: 99px;
   background: #f4d500;
 }
 
 .live-light-overlay-copy .lead {
-  max-width: 54ch;
+  max-width: 48ch;
   margin: 0;
   color: #46576b;
-  font-size: clamp(17px, 1.3vw, 21px);
-  line-height: 1.55;
+  font-size: clamp(16px, 1.2vw, 18px);
+  line-height: 1.48;
 }
 
 .live-light-overlay-copy .hero-cta-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
-  margin-top: 32px;
+  gap: 11px;
+  margin-top: 24px;
 }
 
 .live-light-overlay-copy .hero-cta-row .btn {
-  min-height: 58px;
-  border-radius: 13px;
-  padding: 0 24px;
-  font-size: 17px;
+  min-height: 52px;
+  border-radius: 12px;
+  padding: 0 20px;
+  font-size: 15px;
   font-weight: 850;
 }
 
 .live-light-overlay-copy .hero-cta-row .btn.ghost {
   border-color: rgba(44, 90, 140, 0.34);
-  background: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.84);
   color: #172232;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
 .live-light-overlay-copy .google-mark {
-  margin-right: 8px;
-  font-size: 20px;
+  margin-right: 7px;
+  font-size: 19px;
   font-weight: 900;
 }
 
 .live-light-overlay-frame .hero-slideshow-controls {
   position: absolute;
-  right: 28px;
-  bottom: 26px;
+  right: 22px;
+  bottom: 20px;
   z-index: 3;
   display: flex;
   align-items: center;
-  gap: 13px;
-  min-height: 62px;
-  padding: 8px 12px;
+  gap: 10px;
+  min-height: 54px;
+  padding: 6px 9px;
   border: 1px solid rgba(51, 76, 105, 0.20);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.84);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
@@ -5446,15 +5453,15 @@ input#customer-dob[type="date"]::-webkit-clear-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 46px;
-  height: 46px;
-  min-height: 46px;
+  width: 40px;
+  height: 40px;
+  min-height: 40px;
   padding: 0;
   border: 1px solid rgba(51, 76, 105, 0.22);
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.78);
   color: #172232;
-  font-size: 31px;
+  font-size: 27px;
   line-height: 1;
   cursor: pointer;
 }
@@ -5462,13 +5469,13 @@ input#customer-dob[type="date"]::-webkit-clear-button {
 .live-light-overlay-frame .hero-slide-dots {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
 }
 
 .live-light-overlay-frame .hero-slide-dot {
-  width: 10px;
-  height: 10px;
-  min-height: 10px;
+  width: 9px;
+  height: 9px;
+  min-height: 9px;
   padding: 0;
   border: 0;
   border-radius: 999px;
@@ -5480,25 +5487,31 @@ input#customer-dob[type="date"]::-webkit-clear-button {
 }
 
 .live-light-overlay-frame .hero-slide-dot.is-active {
-  width: 31px;
+  width: 28px;
   background: #1f6feb;
 }
 
-@media (max-width: 1250px) {
+@media (max-width: 980px) {
   .live-light-overlay-hero-stage {
-    width: min(1180px, calc(100vw - 48px)) !important;
+    width: min(900px, calc(100vw - 32px)) !important;
+  }
+
+  .live-light-overlay-slideshow,
+  .live-light-overlay-frame {
+    height: 620px;
+    min-height: 620px;
   }
 
   .live-light-overlay-copy {
-    width: min(510px, 48%);
+    width: min(470px, 49%);
   }
 
   .live-light-overlay-copy h1 {
-    font-size: clamp(40px, 4.8vw, 60px);
+    font-size: clamp(39px, 5.2vw, 52px);
   }
 }
 
-@media (max-width: 860px) {
+@media (max-width: 760px) {
   .live-light-overlay-hero {
     padding-top: 14px !important;
   }
@@ -5509,11 +5522,12 @@ input#customer-dob[type="date"]::-webkit-clear-button {
 
   .live-light-overlay-slideshow,
   .live-light-overlay-frame {
-    min-height: 690px;
+    height: 680px;
+    min-height: 680px;
   }
 
   .live-light-overlay-frame {
-    border-radius: 24px;
+    border-radius: 23px;
   }
 
   .live-light-overlay-frame .hero-slide {
@@ -5524,95 +5538,85 @@ input#customer-dob[type="date"]::-webkit-clear-button {
     background:
       linear-gradient(
         180deg,
-        rgba(249, 252, 255, 0.95) 0%,
-        rgba(249, 252, 255, 0.84) 38%,
-        rgba(249, 252, 255, 0.50) 61%,
-        rgba(249, 252, 255, 0.88) 100%
+        rgba(249, 252, 255, 0.97) 0%,
+        rgba(249, 252, 255, 0.91) 40%,
+        rgba(249, 252, 255, 0.50) 65%,
+        rgba(249, 252, 255, 0.83) 100%
       ),
       linear-gradient(
         90deg,
-        rgba(249, 252, 255, 0.88) 0%,
-        rgba(249, 252, 255, 0.36) 100%
+        rgba(249, 252, 255, 0.86) 0%,
+        rgba(249, 252, 255, 0.30) 100%
       );
   }
 
   .live-light-overlay-copy {
-    top: 34px;
-    right: 26px;
-    left: 26px;
+    top: 28px;
+    right: 24px;
+    left: 24px;
     width: auto;
     transform: none;
   }
 
   .live-light-overlay-copy .kicker {
-    margin-bottom: 16px !important;
-    font-size: 11px !important;
+    margin-bottom: 13px !important;
+    font-size: 10px !important;
   }
 
   .live-light-overlay-copy h1 {
     max-width: 13ch;
-    font-size: clamp(37px, 8.5vw, 54px);
+    font-size: clamp(35px, 8vw, 47px);
   }
 
   .live-light-overlay-copy .hero-rule {
-    width: 64px;
+    width: 58px;
     height: 3px;
-    margin: 21px 0 18px;
+    margin: 18px 0 15px;
   }
 
   .live-light-overlay-copy .lead {
-    max-width: 46ch;
-    font-size: 16px;
-    line-height: 1.48;
+    max-width: 45ch;
+    font-size: 15px;
+    line-height: 1.44;
   }
 
   .live-light-overlay-copy .hero-cta-row {
-    gap: 10px;
-    margin-top: 23px;
+    gap: 9px;
+    margin-top: 19px;
   }
 
   .live-light-overlay-copy .hero-cta-row .btn {
-    min-height: 50px;
-    padding: 0 18px;
-    font-size: 15px;
+    min-height: 48px;
+    padding: 0 16px;
+    font-size: 14px;
   }
 
   .live-light-overlay-frame .hero-slideshow-controls {
-    right: 18px;
-    bottom: 18px;
-    min-height: 54px;
-    gap: 10px;
-    padding: 6px 9px;
-  }
-
-  .live-light-overlay-frame .hero-slide-btn {
-    width: 40px;
-    height: 40px;
-    min-height: 40px;
-    font-size: 27px;
+    right: 16px;
+    bottom: 16px;
   }
 }
 
 @media (max-width: 520px) {
   .live-light-overlay-slideshow,
   .live-light-overlay-frame {
+    height: 650px;
     min-height: 650px;
   }
 
   .live-light-overlay-copy {
-    top: 27px;
-    right: 20px;
-    left: 20px;
+    top: 23px;
+    right: 18px;
+    left: 18px;
   }
 
   .live-light-overlay-copy h1 {
     max-width: 12ch;
-    font-size: clamp(34px, 10.7vw, 46px);
-    letter-spacing: -0.05em;
+    font-size: clamp(32px, 10vw, 42px);
   }
 
   .live-light-overlay-copy .lead {
-    font-size: 15px;
+    font-size: 14px;
   }
 
   .live-light-overlay-copy .hero-cta-row {
