@@ -5280,3 +5280,132 @@ input#customer-dob[type="date"]::-webkit-clear-button {
   -webkit-appearance: none !important;
 }
 
+/* ======================================================
+   AVAILABILITY LAYOUT — SAFARI / CHROME / MOBILE MATCH
+   Harmonises spacing, field heights and the Step 1 layout.
+====================================================== */
+
+#step-1 > .card {
+  margin: 0 0 18px !important;
+  padding: 28px !important;
+}
+
+#step-1 > .card h3 {
+  margin: 0 0 12px !important;
+  line-height: 1.2 !important;
+}
+
+#step-1 > .card > p.muted {
+  margin: 0 !important;
+  line-height: 1.5 !important;
+}
+
+#availability-form {
+  margin: 0 !important;
+}
+
+#availability-form .form-grid {
+  display: grid !important;
+  align-items: end !important;
+  gap: 16px 22px !important;
+}
+
+#availability-form .form-field {
+  min-width: 0 !important;
+}
+
+#availability-form .form-field label {
+  display: block !important;
+  min-height: 18px !important;
+  margin: 0 0 9px !important;
+  line-height: 1.2 !important;
+}
+
+#availability-form .apple-date-trigger,
+#availability-form #pickup-time,
+#availability-form #duration-days,
+#availability-form .form-field-actions .btn {
+  width: 100% !important;
+  height: 60px !important;
+  min-height: 60px !important;
+  max-height: 60px !important;
+  box-sizing: border-box !important;
+  border-radius: 14px !important;
+  font-size: 18px !important;
+  line-height: 1.2 !important;
+}
+
+#availability-form .apple-date-trigger,
+#availability-form #pickup-time,
+#availability-form #duration-days {
+  padding: 14px 16px !important;
+}
+
+#availability-form .form-field-actions {
+  display: flex !important;
+  align-items: flex-end !important;
+  margin: 0 !important;
+}
+
+#availability-form .form-field-actions .btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  padding: 0 22px !important;
+}
+
+/* No native down-arrow / “v” in the availability duration field. */
+#availability-form #duration-days {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  background-image: none !important;
+  padding-right: 16px !important;
+}
+
+#availability-form #duration-days::-ms-expand {
+  display: none !important;
+}
+
+/* Placeholder colour, while real duration choices keep normal text colour. */
+#availability-form #duration-days:required:invalid {
+  color: var(--muted) !important;
+}
+
+#availability-form #duration-days option {
+  color: var(--text);
+}
+
+@media (min-width: 721px) {
+  #availability-form:not(.has-pickup-time) .form-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  #availability-form.has-pickup-time .form-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 720px) {
+  #step-1 > .card {
+    margin-bottom: 14px !important;
+    padding: 24px !important;
+  }
+
+  #availability-form .form-grid,
+  #availability-form:not(.has-pickup-time) .form-grid,
+  #availability-form.has-pickup-time .form-grid {
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+  }
+
+  #availability-form .form-field label {
+    margin-bottom: 9px !important;
+  }
+
+  #availability-form .form-field-actions {
+    margin-top: 2px !important;
+  }
+}
+
