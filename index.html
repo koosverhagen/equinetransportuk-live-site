@@ -17,6 +17,12 @@
     />
 
     <link rel="stylesheet" href="styles.css?v=live-light-dark-v3" />
+    <link
+      rel="preload"
+      as="image"
+      href="images/hero1.webp"
+      fetchpriority="high"
+    />
     <link rel="icon" href="images/favicon.png" />
   
     <link rel="canonical" href="https://www.equinetransportuk.com/" />
@@ -227,30 +233,36 @@
                 src="images/hero1.webp"
                 alt="Equine Transport UK horseboxes at the yard"
                 loading="eager"
+                decoding="async"
+                fetchpriority="high"
               />
               <img
                 class="hero-slide"
-                src="images/hero2.webp"
+                data-src="images/hero2.webp"
                 alt="Equine Transport UK 3.5 tonne safety bar horsebox"
                 loading="lazy"
+                decoding="async"
               />
               <img
                 class="hero-slide"
-                src="images/hero3.webp"
+                data-src="images/hero3.webp"
                 alt="Equine Transport UK stallion horsebox"
                 loading="lazy"
+                decoding="async"
               />
               <img
                 class="hero-slide"
-                src="images/hero4.webp"
+                data-src="images/hero4.webp"
                 alt="Equine Transport UK 3.5 tonne horsebox fleet"
                 loading="lazy"
+                decoding="async"
               />
               <img
                 class="hero-slide"
-                src="images/hero5.webp"
+                data-src="images/hero5.webp"
                 alt="Equine Transport UK 7.5 tonne horsebox with living"
                 loading="lazy"
+                decoding="async"
               />
 
               <div class="live-light-overlay-scrim" aria-hidden="true"></div>
@@ -1071,7 +1083,7 @@ removed duplicate, script is loaded at end of body -->
         });
       });
     </script>
-    <script src="app.js?v=compact-hero-availability-v4"></script>
+    <script src="app.js?v=homepage-speed-v1"></script>
     <div id="calendar-tooltip" class="cal-tooltip"></div>
   </body>
 </html>

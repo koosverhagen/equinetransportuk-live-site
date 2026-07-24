@@ -3324,7 +3324,7 @@ function asDate(dateString, timeString) {
 }
 
 async function getBookings(force = false) {
-  if (!force && bookingsRequestPromise) {
+  if (bookingsRequestPromise) {
     return bookingsRequestPromise;
   }
 
@@ -5328,6 +5328,9 @@ function renderFleet() {
     const img = document.createElement("img");
     img.src = firstImage;
     img.alt = vehicle.name;
+    img.loading = "lazy";
+    img.decoding = "async";
+    img.fetchPriority = "low";
 
     const overlay = document.createElement("div");
     overlay.className = "fleet-overlay";
@@ -7597,16 +7600,10 @@ window.fleetImages = window.fleetImages || [
 ];
 
 // Initial render
-(async () => {
+(() => {
   if (bookingSubmitBtn) bookingSubmitBtn.disabled = true;
 
   renderFleet();
-
-  await getBookings(true);
-
-  renderBookings();
-  renderAdminBookings();
-
   updateCheckoutSummary();
 })();
 
@@ -8866,12 +8863,58 @@ async function showVehiclePreview(date, event) {
    Initial render
 ====================================================== */
 
-  renderCalendar();
+  let publicCalendarStarted = false;
+  let bookingWatcherTimer = null;
+
+  function startPublicCalendar() {
+    if (publicCalendarStarted) return;
+    publicCalendarStarted = true;
+
+    renderCalendar();
+
+    // The availability endpoints themselves remain live. This lightweight
+    // version watcher is delayed so it does not compete with the first paint.
+    window.setTimeout(() => {
+      watchBookingUpdates();
+
+      if (!bookingWatcherTimer) {
+        bookingWatcherTimer = window.setInterval(watchBookingUpdates, 30000);
+      }
+    }, 15000);
+  }
+
+  const bookingSection =
+    document.getElementById("booking") ||
+    document.getElementById("availability-form");
+
+  if ("IntersectionObserver" in window && bookingSection) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        startPublicCalendar();
+      },
+      { rootMargin: "700px 0px", threshold: 0.01 },
+    );
+
+    observer.observe(bookingSection);
+  } else {
+    window.setTimeout(startPublicCalendar, 1200);
+  }
+
+  document
+    .querySelectorAll(
+      'a[href="#booking"], a[href="#availability-form"], #start-booking-btn',
+    )
+    .forEach((link) => {
+      link.addEventListener("click", startPublicCalendar, { once: true });
+    });
 
   const durationInput = document.getElementById("duration-days");
 
   if (durationInput) {
     durationInput.addEventListener("change", () => {
+      startPublicCalendar();
       renderCalendar();
 
       const pickupInput = document.getElementById("pickup-date");
@@ -8884,10 +8927,6 @@ async function showVehiclePreview(date, event) {
       }
     });
   }
-  //* start live booking watcher */
-
-  watchBookingUpdates(); // run once immediately
-  setInterval(watchBookingUpdates, 10000); // every 10 seconds
 })();
 
 /* ======================================================
@@ -8907,6 +8946,28 @@ function initDarkHeroSlideshow() {
 
   root.dataset.heroSlideshowReady = "true";
 
+  function ensureSlideLoaded(slide) {
+    if (!slide) return;
+
+    const deferredSrc = slide.dataset.src;
+    if (!deferredSrc || slide.getAttribute("src")) return;
+
+    slide.setAttribute("src", deferredSrc);
+    slide.removeAttribute("data-src");
+  }
+
+  function preloadNextSlide(currentIndex) {
+    const nextSlide = slides[(currentIndex + 1) % slides.length];
+
+    const run = () => ensureSlideLoaded(nextSlide);
+
+    if ("requestIdleCallback" in window) {
+      window.requestIdleCallback(run, { timeout: 1800 });
+    } else {
+      window.setTimeout(run, 700);
+    }
+  }
+
   let index = Math.max(
     0,
     slides.findIndex((slide) => slide.classList.contains("is-active")),
@@ -8916,6 +8977,7 @@ function initDarkHeroSlideshow() {
 
   function showSlide(nextIndex) {
     index = (nextIndex + slides.length) % slides.length;
+    ensureSlideLoaded(slides[index]);
 
     slides.forEach((slide, i) => {
       slide.classList.toggle("is-active", i === index);
@@ -8925,6 +8987,8 @@ function initDarkHeroSlideshow() {
       dot.classList.toggle("is-active", i === index);
       dot.setAttribute("aria-current", i === index ? "true" : "false");
     });
+
+    preloadNextSlide(index);
   }
 
   function stop() {
@@ -8961,6 +9025,14 @@ function initDarkHeroSlideshow() {
 
   root.addEventListener("mouseenter", stop);
   root.addEventListener("mouseleave", start);
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      stop();
+    } else {
+      start();
+    }
+  });
 
   showSlide(index);
   start();
