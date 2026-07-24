@@ -3161,23 +3161,27 @@ function resetBookingFlow() {
 }
 
 function resetCalendarToToday() {
-  const calendarEl = document.getElementById("availability-calendar");
-
-  if (!window.renderCalendar || !window.__calendarState) {
-    if (calendarEl) {
-      console.warn("⚠️ Calendar not ready");
-    }
-    return;
-  }
-
   const today = new Date();
   today.setDate(1);
 
-  // 🔥 update shared state
-  window.__calendarState.currentDate = today;
+  // Update the shared month immediately, even when the deferred calendar
+  // has not rendered yet.
+  if (window.__calendarState) {
+    window.__calendarState.currentDate = today;
+  } else {
+    window.__resetCalendarToTodayPending = true;
+  }
 
-  // 🔥 render with correct month
-  window.renderCalendar();
+  if (typeof window.renderCalendar === "function") {
+    window.renderCalendar();
+    return;
+  }
+
+  // Start the deferred public calendar when the booking button is used.
+  // This is an expected state, so no console warning is needed.
+  if (typeof window.startPublicCalendar === "function") {
+    window.startPublicCalendar();
+  }
 }
 
 async function fetchJsonWithTimeout(url, options = {}, timeoutMs = 12000) {
@@ -8870,6 +8874,13 @@ async function showVehiclePreview(date, event) {
     if (publicCalendarStarted) return;
     publicCalendarStarted = true;
 
+    if (window.__resetCalendarToTodayPending && window.__calendarState) {
+      const today = new Date();
+      today.setDate(1);
+      window.__calendarState.currentDate = today;
+      window.__resetCalendarToTodayPending = false;
+    }
+
     renderCalendar();
 
     // The availability endpoints themselves remain live. This lightweight
@@ -8882,6 +8893,10 @@ async function showVehiclePreview(date, event) {
       }
     }, 15000);
   }
+
+  // Allow Start booking / Self Drive links to initialise the deferred
+  // calendar before resetCalendarToToday needs it.
+  window.startPublicCalendar = startPublicCalendar;
 
   const bookingSection =
     document.getElementById("booking") ||
