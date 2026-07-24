@@ -3,6 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script>
+      try {
+        if (localStorage.getItem("equine-theme") === "dark") {
+          document.documentElement.classList.add("theme-dark");
+        }
+      } catch (_) {}
+    </script>
     <title>Signed Handover Report | Equine Transport UK</title>
     <meta name="handover-copy-version" content="customer-signing-v5" />
 
@@ -1049,6 +1056,17 @@
 
       @media print { .signing-panel { display: none !important; } }
 
+    </style>
+      <script src="theme.js?v=live-light-dark-v2" defer></script>
+  
+    <style>
+      html.theme-dark { color-scheme: dark; }
+      html.theme-dark body { background: #07111d !important; color: #f3f7fb !important; }
+      html.theme-dark .top-actions { background: rgba(8, 19, 31, 0.94) !important; border-color: #2b3b4d !important; }
+      html.theme-dark .status { background: #0f1c2a !important; border-color: #2b3b4d !important; color: #a9b7c7 !important; }
+      html.theme-dark .btn:not(.primary) { background: #132335 !important; color: #f3f7fb !important; border-color: #3a5068 !important; }
+      /* The signed A4 report stays white so it remains printable and legally clear. */
+      html.theme-dark .page { background: #ffffff !important; color: #111827 !important; }
     </style>
   </head>
 

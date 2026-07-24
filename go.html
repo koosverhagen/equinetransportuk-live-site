@@ -3,6 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script>
+      try {
+        if (localStorage.getItem("equine-theme") === "dark") {
+          document.documentElement.classList.add("theme-dark");
+        }
+      } catch (_) {}
+    </script>
     <title>Opening link | Equine Transport UK</title>
     <meta name="robots" content="noindex, nofollow" />
     <style>
@@ -63,6 +70,14 @@
         font-size: 13px;
         word-break: break-all;
       }
+    </style>
+      <script src="theme.js?v=live-light-dark-v2" defer></script>
+  
+    <style>
+      html.theme-dark { color-scheme: dark; }
+      html.theme-dark body { background: #07111d !important; color: #f3f7fb !important; }
+      html.theme-dark .card { background: #0f1c2a !important; border-color: #2b3b4d !important; box-shadow: none !important; }
+      html.theme-dark p { color: #a9b7c7 !important; }
     </style>
   </head>
 

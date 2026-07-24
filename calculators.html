@@ -3,6 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      try {
+        if (localStorage.getItem("equine-theme") === "dark") {
+          document.documentElement.classList.add("theme-dark");
+        }
+      } catch (_) {}
+    </script>
 
     <title>Horse Transport Calculators | Fuel &amp; Driven Transport Cost Estimator</title>
     <meta
@@ -10,7 +17,7 @@
       content="Use Equine Transport UK&#x27;s customer calculators to estimate self-drive horsebox fuel costs, mileage and driven horse transport route costs before booking."
     />
 
-    <link rel="stylesheet" href="styles.css?v=64" />
+    <link rel="stylesheet" href="styles.css?v=live-light-dark-v3" />
     <link rel="icon" href="images/favicon.png" />
 
     <style>
@@ -276,6 +283,7 @@
       ]
     }
     </script>
+      <script src="theme.js?v=live-light-dark-v2" defer></script>
   </head>
 
   <body>
@@ -305,6 +313,16 @@
           <a href="calculators.html">Calculators</a>
           <a href="contact.html">Contact</a>
         </nav>
+
+        <button
+          class="theme-toggle"
+          type="button"
+          data-theme-toggle
+          aria-label="Switch to dark mode"
+          aria-pressed="false"
+        >
+          <span class="theme-toggle-icon" aria-hidden="true">☾</span>
+        </button>
 
         <button
           class="nav-toggle"
@@ -534,7 +552,13 @@
         if (!modal || !frame || !title || !closeBtn) return;
 
         function openCalculator(src, heading) {
-          frame.src = src;
+          const joiner = src.includes("?") ? "&" : "?";
+          frame.src = `${src}${joiner}embed=1`;
+          frame.onload = () => {
+            try {
+              frame.contentWindow?.scrollTo(0, 0);
+            } catch (_) {}
+          };
           title.textContent = heading || "Calculator";
           modal.classList.add("active");
           modal.setAttribute("aria-hidden", "false");

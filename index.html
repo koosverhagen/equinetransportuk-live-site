@@ -3,13 +3,20 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      try {
+        if (localStorage.getItem("equine-theme") === "dark") {
+          document.documentElement.classList.add("theme-dark");
+        }
+      } catch (_) {}
+    </script>
     <title>Self Drive Horsebox Hire East Sussex &amp; UK-Wide Driven Horse Transport | Equine Transport UK</title>
     <meta
       name="description"
       content="Book self-drive 3.5T and 7.5T horsebox hire from East Sussex or request professional driven horse transport across the whole of the UK."
     />
 
-    <link rel="stylesheet" href="styles.css?v=compact-hero-availability-v4" />
+    <link rel="stylesheet" href="styles.css?v=live-light-dark-v3" />
     <link rel="icon" href="images/favicon.png" />
   
     <link rel="canonical" href="https://www.equinetransportuk.com/" />
@@ -150,6 +157,7 @@
       ]
     }
     </script>
+      <script src="theme.js?v=live-light-dark-v2" defer></script>
   </head>
   <body>
     <header class="site-header">
@@ -178,6 +186,16 @@
           <a href="calculators.html">Calculators</a>
           <a href="contact.html">Contact</a>
         </nav>
+
+        <button
+          class="theme-toggle"
+          type="button"
+          data-theme-toggle
+          aria-label="Switch to dark mode"
+          aria-pressed="false"
+        >
+          <span class="theme-toggle-icon" aria-hidden="true">☾</span>
+        </button>
 
         <button
           class="nav-toggle"

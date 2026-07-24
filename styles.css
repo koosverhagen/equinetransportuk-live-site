@@ -5773,3 +5773,677 @@ input#customer-dob[type="date"]::-webkit-clear-button {
     margin-top: 2px !important;
   }
 }
+
+/* ======================================================
+   LIVE LIGHT / DARK THEME
+   Same layout and behaviour; only the colour palette changes.
+====================================================== */
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 38px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  margin-left: 10px;
+  padding: 0 !important;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.theme-toggle:hover {
+  border-color: rgba(31, 111, 235, 0.55);
+  transform: translateY(-1px);
+}
+
+.theme-toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(31, 111, 235, 0.16);
+}
+
+.theme-toggle-icon {
+  display: block;
+  font-size: 18px;
+  line-height: 1;
+}
+
+@media (min-width: 1071px) {
+  .header-inner .main-nav {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 1070px) {
+  .theme-toggle {
+    margin-left: auto;
+    margin-right: 7px;
+  }
+
+  .header-inner .brand {
+    max-width: calc(100% - 98px);
+  }
+}
+
+@media (max-width: 650px) {
+  .theme-toggle {
+    width: 36px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    margin-right: 5px;
+  }
+
+  .header-inner .brand {
+    max-width: calc(100% - 92px);
+  }
+}
+
+html.theme-dark {
+  color-scheme: dark;
+  --bg: #07111d;
+  --card: #0f1c2a;
+  --text: #f3f7fb;
+  --muted: #a9b7c7;
+  --line: #2b3b4d;
+  --accent: #2f7df6;
+}
+
+html.theme-dark body {
+  color: var(--text) !important;
+  background:
+    radial-gradient(circle at 50% -18%, rgba(47, 125, 246, 0.15), transparent 34rem),
+    linear-gradient(180deg, #091522 0%, #06101b 100%) !important;
+}
+
+html.theme-dark .site-header {
+  background: rgba(8, 19, 31, 0.90) !important;
+  border-bottom-color: var(--line) !important;
+}
+
+html.theme-dark .brand,
+html.theme-dark .brand-name,
+html.theme-dark .site-footer h3,
+html.theme-dark .site-footer h4,
+html.theme-dark h1,
+html.theme-dark h2,
+html.theme-dark h3,
+html.theme-dark h4 {
+  color: var(--text) !important;
+}
+
+html.theme-dark .brand-group,
+html.theme-dark .lead,
+html.theme-dark .muted,
+html.theme-dark .footer-contact,
+html.theme-dark .main-nav a,
+html.theme-dark .seo-panel p,
+html.theme-dark .faq-item p,
+html.theme-dark .terms-card-premium p,
+html.theme-dark .terms-card-premium li,
+html.theme-dark .driven-info-card p,
+html.theme-dark .contact-detail,
+html.theme-dark .directions-section p,
+html.theme-dark .calculator-card p {
+  color: var(--muted) !important;
+}
+
+html.theme-dark .brand-subtitle,
+html.theme-dark a:not(.btn) {
+  color: #69a2ff;
+}
+
+html.theme-dark .brand-logo {
+  background: #ffffff !important;
+  border-color: #425269 !important;
+}
+
+html.theme-dark .nav-toggle-bar {
+  background: var(--text) !important;
+}
+
+html.theme-dark .main-nav {
+  background: var(--card) !important;
+  border-color: var(--line) !important;
+  box-shadow: none !important;
+}
+
+html.theme-dark .site-footer {
+  border-top-color: var(--line) !important;
+}
+
+html.theme-dark :is(
+  .card,
+  .fleet-card,
+  .booking-item,
+  .summary-card,
+  .booking-summary-card,
+  .voucher-card,
+  .cal-wrap,
+  .requirements-box,
+  .reviews-modal,
+  .google-reviews-photos-block,
+  .google-review-card,
+  .seo-panel,
+  .seo-mini-card,
+  .faq-item,
+  .terms-card-premium,
+  .terms-video-box,
+  .terms-modal,
+  .driven-hero-card,
+  .driven-info-card,
+  .driven-calculator-section,
+  .contact-panel,
+  .contact-detail,
+  .directions-section,
+  .calculator-card,
+  .calculator-modal-card
+) {
+  background: var(--card) !important;
+  border-color: var(--line) !important;
+  box-shadow: none !important;
+}
+
+html.theme-dark :is(
+  input,
+  select,
+  textarea,
+  .apple-date-trigger,
+  .fixed-field
+) {
+  background: #0a1623 !important;
+  color: var(--text) !important;
+  border-color: #33465b !important;
+  box-shadow: none !important;
+}
+
+html.theme-dark input::placeholder,
+html.theme-dark textarea::placeholder,
+html.theme-dark .apple-date-trigger.empty .apple-date-trigger-text,
+html.theme-dark #availability-form #duration-days:required:invalid {
+  color: #8190a2 !important;
+  opacity: 1;
+}
+
+html.theme-dark option {
+  background: #0f1c2a;
+  color: var(--text);
+}
+
+html.theme-dark .btn.ghost,
+html.theme-dark .btn-ghost,
+html.theme-dark .theme-toggle,
+html.theme-dark .reset-booking-step-btn {
+  background: #132335 !important;
+  color: var(--text) !important;
+  border-color: #3a5068 !important;
+}
+
+html.theme-dark .btn.ghost:hover,
+html.theme-dark .btn-ghost:hover,
+html.theme-dark .theme-toggle:hover {
+  background: #192c42 !important;
+}
+
+html.theme-dark :is(
+  .search-chip,
+  .availability-meta-pill,
+  .terms-pill,
+  .service-area-list span,
+  .customer-badge,
+  .base-note,
+  .google-reviews-footer,
+  .apple-date-picker-today
+) {
+  background: #132335 !important;
+  color: #cbd8e7 !important;
+  border-color: #33485f !important;
+}
+
+html.theme-dark .availability-status,
+html.theme-dark .hire-form-info,
+html.theme-dark .quote,
+html.theme-dark .preselected-warning,
+html.theme-dark .success-note {
+  background: #101f30 !important;
+  border-color: #33485f !important;
+  color: var(--muted) !important;
+}
+
+html.theme-dark .price-row,
+html.theme-dark .summary-row,
+html.theme-dark .summary-divider,
+html.theme-dark .calculator-modal-header,
+html.theme-dark .terms-modal-header {
+  border-color: var(--line) !important;
+}
+
+html.theme-dark .summary-row.notes,
+html.theme-dark .google-review-text,
+html.theme-dark .google-reviews-title,
+html.theme-dark .google-reviews-kicker,
+html.theme-dark .google-reviews-footer {
+  color: var(--muted) !important;
+}
+
+html.theme-dark .google-reviews-summary {
+  background: linear-gradient(180deg, #122235 0%, #0e1b29 100%) !important;
+  border-color: var(--line) !important;
+}
+
+html.theme-dark .reviews-close,
+html.theme-dark .calculator-modal-close,
+html.theme-dark .terms-modal-close {
+  background: #17283b !important;
+  color: var(--text) !important;
+  border-color: #3a5068 !important;
+  box-shadow: none !important;
+}
+
+html.theme-dark .reviews-drag {
+  background: #60738a !important;
+}
+
+html.theme-dark .google-review-avatar,
+html.theme-dark .google-review-photo-card {
+  background: #1a2a3d !important;
+}
+
+html.theme-dark .cal-head,
+html.theme-dark .cal-weekdays,
+html.theme-dark .cal-title-help {
+  color: var(--muted) !important;
+}
+
+html.theme-dark .cal-nav {
+  background: #132335 !important;
+  color: var(--text) !important;
+  border-color: #33485f !important;
+}
+
+html.theme-dark #availability-calendar .cal-day,
+html.theme-dark #availability-calendar .cal-day.cal-date-only,
+html.theme-dark #availability-calendar .cal-day.cal-available,
+html.theme-dark #availability-calendar .cal-day.cal-unavailable,
+html.theme-dark #availability-calendar .cal-day.cal-weekend,
+html.theme-dark #availability-calendar .cal-day.cal-weekend.cal-date-only {
+  background: #0d1a28 !important;
+  color: var(--text) !important;
+  border-color: #304258 !important;
+}
+
+html.theme-dark #availability-calendar .cal-day.cal-past {
+  background: #0a1521 !important;
+  color: #65758a !important;
+}
+
+html.theme-dark #availability-calendar .cal-day.cal-selected {
+  background: linear-gradient(180deg, #17345b, #112944) !important;
+  color: #dceaff !important;
+  border-color: var(--accent) !important;
+}
+
+html.theme-dark .apple-date-picker-backdrop {
+  background: rgba(0, 5, 12, 0.68) !important;
+}
+
+html.theme-dark .apple-date-picker-card {
+  background: rgba(13, 27, 42, 0.97) !important;
+  border-color: #33475e !important;
+  box-shadow: 0 26px 80px rgba(0, 0, 0, 0.42) !important;
+}
+
+html.theme-dark :is(
+  .apple-date-picker-close,
+  .apple-date-picker-nav,
+  .apple-date-picker-day,
+  .apple-date-picker-today
+) {
+  background: #142538 !important;
+  color: var(--text) !important;
+}
+
+html.theme-dark .apple-date-picker-day:hover:not(:disabled) {
+  background: #1b3552 !important;
+}
+
+html.theme-dark .apple-date-picker-day.disabled,
+html.theme-dark .apple-date-picker-day:disabled {
+  background: #0b1724 !important;
+  color: #526175 !important;
+}
+
+html.theme-dark .apple-date-picker-head h3,
+html.theme-dark .apple-date-picker-month {
+  color: var(--text) !important;
+}
+
+html.theme-dark .apple-date-picker-grabber {
+  background: #53667c !important;
+}
+
+/* Homepage hero: identical layout, dark palette. */
+html.theme-dark .live-light-overlay-frame {
+  border-color: #31455c !important;
+  background-color: #0a1725 !important;
+}
+
+html.theme-dark .live-light-overlay-scrim {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(5, 15, 26, 0.98) 0%,
+      rgba(5, 15, 26, 0.95) 19%,
+      rgba(5, 15, 26, 0.82) 35%,
+      rgba(5, 15, 26, 0.46) 51%,
+      rgba(5, 15, 26, 0.08) 68%,
+      rgba(5, 15, 26, 0.00) 84%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(5, 15, 26, 0.04) 0%,
+      rgba(5, 15, 26, 0.00) 66%,
+      rgba(5, 15, 26, 0.26) 100%
+    ) !important;
+}
+
+html.theme-dark .live-light-overlay-copy,
+html.theme-dark .live-light-overlay-copy h1 {
+  color: #f7fbff !important;
+}
+
+html.theme-dark .live-light-overlay-copy .lead {
+  color: #c0ccda !important;
+}
+
+html.theme-dark .live-light-overlay-copy .kicker {
+  color: #ffe600 !important;
+}
+
+html.theme-dark .live-light-overlay-copy .hero-cta-row .btn.ghost {
+  background: rgba(12, 29, 46, 0.80) !important;
+  color: #f7fbff !important;
+  border-color: rgba(151, 184, 222, 0.42) !important;
+}
+
+html.theme-dark .live-light-overlay-frame .hero-slideshow-controls,
+html.theme-dark .live-light-overlay-frame .hero-slide-btn {
+  background: rgba(12, 29, 46, 0.84) !important;
+  color: #f7fbff !important;
+  border-color: rgba(151, 184, 222, 0.34) !important;
+}
+
+html.theme-dark .live-light-overlay-frame .hero-slide-dot {
+  background: #6d7f94 !important;
+}
+
+html.theme-dark .live-light-overlay-frame .hero-slide-dot.is-active {
+  background: #2f7df6 !important;
+}
+
+/* Page-specific components whose original CSS uses fixed light colours. */
+html.theme-dark .terms-card-premium,
+html.theme-dark .terms-modal,
+html.theme-dark .driven-hero-card,
+html.theme-dark .driven-info-card,
+html.theme-dark .driven-calculator-section,
+html.theme-dark .contact-panel,
+html.theme-dark .calculator-card,
+html.theme-dark .calculator-modal-card {
+  background: var(--card) !important;
+}
+
+html.theme-dark .terms-video-box,
+html.theme-dark .driven-calculator-frame,
+html.theme-dark .calculator-frame,
+html.theme-dark .directions-section,
+html.theme-dark .contact-detail {
+  background: #0a1623 !important;
+  border-color: var(--line) !important;
+}
+
+html.theme-dark .calculator-card::before {
+  background: radial-gradient(circle at top right, rgba(47, 125, 246, 0.16), transparent 34%) !important;
+}
+
+html.theme-dark .calculator-icon {
+  background: #142a45 !important;
+  border-color: #294d78 !important;
+}
+
+html.theme-dark .contact-page,
+html.theme-dark body:has(.contact-page) {
+  background:
+    radial-gradient(circle at 15% 0%, rgba(47, 125, 246, 0.18), transparent 30rem),
+    linear-gradient(180deg, #091522 0%, #06101b 100%) !important;
+}
+
+html.theme-dark .map-frame {
+  opacity: 0.88;
+}
+
+html.theme-dark .deposit-card {
+  background: var(--card) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--line);
+  box-shadow: none !important;
+}
+
+html.theme-dark #booking-info,
+html.theme-dark .deposit-note {
+  color: var(--muted) !important;
+}
+
+/* Keep Stripe's secure card field white for guaranteed legibility. */
+html.theme-dark .stripe-card {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+@media (max-width: 760px) {
+  html.theme-dark .live-light-overlay-scrim {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(5, 15, 26, 0.97) 0%,
+        rgba(5, 15, 26, 0.91) 43%,
+        rgba(5, 15, 26, 0.48) 67%,
+        rgba(5, 15, 26, 0.82) 100%
+      ),
+      linear-gradient(
+        90deg,
+        rgba(5, 15, 26, 0.85) 0%,
+        rgba(5, 15, 26, 0.28) 100%
+      ) !important;
+  }
+}
+
+/* ======================================================
+   DARK MODE POLISH — V2
+   Fixes fleet detail modal, availability labels and embedded calculator chrome.
+====================================================== */
+
+/* Availability labels must stay readable over the dark page background. */
+html.theme-dark #availability-form .form-field label,
+html.theme-dark #availability-form label,
+html.theme-dark #step-1 .form-field label {
+  color: #dce7f3 !important;
+  opacity: 1 !important;
+}
+
+/* Fleet details modal: convert every remaining fixed light surface. */
+html.theme-dark .fleet-detail-overlay {
+  background: rgba(1, 8, 16, 0.84) !important;
+}
+
+html.theme-dark .fleet-detail-modal {
+  background: #0f1c2a !important;
+  color: #f3f7fb !important;
+  border-color: #33465b !important;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.56) !important;
+}
+
+html.theme-dark .fleet-detail-copy,
+html.theme-dark .fleet-detail-copy h2,
+html.theme-dark .fleet-detail-video h3,
+html.theme-dark .fleet-detail-info-grid h3 {
+  color: #f3f7fb !important;
+}
+
+html.theme-dark .fleet-detail-intro,
+html.theme-dark .fleet-detail-info-grid li,
+html.theme-dark .fleet-detail-video-placeholder {
+  color: #a9b7c7 !important;
+}
+
+html.theme-dark .fleet-detail-video-placeholder {
+  background: #0a1623 !important;
+  border-color: #3a4e64 !important;
+}
+
+html.theme-dark .fleet-detail-thumb {
+  background: #142538 !important;
+  border: 1px solid #33465b !important;
+}
+
+html.theme-dark .fleet-detail-close {
+  background: #132335 !important;
+  color: #f3f7fb !important;
+  border-color: #425a73 !important;
+  box-shadow: none !important;
+}
+
+/* Calculator overlay header and frame should read as one dark component. */
+html.theme-dark .calculator-modal-card {
+  background: #0f1c2a !important;
+  border: 1px solid #33465b !important;
+}
+
+html.theme-dark .calculator-modal-header {
+  flex: 0 0 auto;
+  min-height: 68px;
+  background: #0f1c2a !important;
+  color: #f3f7fb !important;
+  border-bottom-color: #33465b !important;
+}
+
+html.theme-dark .calculator-modal-header h3 {
+  color: #f3f7fb !important;
+}
+
+html.theme-dark .calculator-frame {
+  background: #0a1623 !important;
+}
+
+/* Keep headings and labels readable on all page-specific dark surfaces. */
+html.theme-dark :is(
+  .terms-card-premium,
+  .driven-hero-card,
+  .driven-info-card,
+  .driven-calculator-section,
+  .contact-panel,
+  .calculator-card
+) :is(h1, h2, h3, h4, label, strong) {
+  color: #f3f7fb !important;
+}
+
+
+/* ======================================================
+   DARK MODE POLISH — V3
+   Your Details labels and extras cards.
+====================================================== */
+
+/* Step 3 / Your Details: keep every field title readable. */
+html.theme-dark #step-3 :is(
+  .form-field > label,
+  .form-group > label,
+  .voucher-left > label
+) {
+  color: #dce7f3 !important;
+  opacity: 1 !important;
+}
+
+/* Read-only field labels and half-day pickup label use the same contrast. */
+html.theme-dark #step-3 :is(
+  label[for="selected-lorry"],
+  label[for="selected-base"],
+  label[for="selected-pickup"],
+  label[for="selected-duration"],
+  label[for="booking-pickup-time"],
+  label[for="customer-name"],
+  label[for="customer-email"],
+  label[for="customer-mobile"],
+  label[for="customer-dob"],
+  label[for="customer-address"],
+  label[for="discount-code"],
+  label[for="customer-notes"]
+) {
+  color: #dce7f3 !important;
+  opacity: 1 !important;
+}
+
+/* Extras should be dark cards, not fixed white rows. */
+html.theme-dark #step-3 .extras-grid > .check,
+html.theme-dark #step-3 .extras-grid > .dartford-row {
+  background: #0a1623 !important;
+  color: #f3f7fb !important;
+  border-color: #33465b !important;
+  box-shadow: none !important;
+}
+
+html.theme-dark #step-3 .dartford-row .check {
+  background: transparent !important;
+  border: 0 !important;
+}
+
+html.theme-dark #step-3 .extras-grid .check span {
+  color: #dce7f3 !important;
+  opacity: 1 !important;
+}
+
+/* A disabled option remains visibly unavailable without disappearing. */
+html.theme-dark #step-3 .extras-grid .check:has(input:disabled) span {
+  color: #8fa0b3 !important;
+}
+
+html.theme-dark #step-3 .check input[type="checkbox"] {
+  background: #07111d !important;
+  border-color: #526a84 !important;
+}
+
+html.theme-dark #step-3 .check input[type="checkbox"]:checked {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+
+html.theme-dark #step-3 .dartford-count input {
+  background: #132335 !important;
+  color: #dce7f3 !important;
+  border-color: #425a73 !important;
+}
+
+html.theme-dark #step-3 .dartford-count input:disabled {
+  background: #172536 !important;
+  color: #aebccc !important;
+  opacity: 0.8 !important;
+}
+
+/* Voucher area should match the surrounding details card. */
+html.theme-dark #step-3 .voucher-card {
+  background: #0a1623 !important;
+  border-color: #33465b !important;
+}
+
+html.theme-dark #step-3 .voucher-message.muted {
+  color: #9eafc1 !important;
+}
+
