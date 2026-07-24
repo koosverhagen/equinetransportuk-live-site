@@ -6447,3 +6447,17 @@ html.theme-dark #step-3 .voucher-message.muted {
   color: #9eafc1 !important;
 }
 
+/* ======================================================
+   DARK MODE POLISH — V4
+   Stronger inactive booking-step text contrast.
+====================================================== */
+
+html.theme-dark .booking-steps .step:not(.active) {
+  color: #475569 !important;
+  font-weight: 650 !important;
+}
+
+html.theme-dark .booking-steps .step:not(.active) {
+  border-color: #64748b !important;
+}
+
