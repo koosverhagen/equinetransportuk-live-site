@@ -7,6 +7,8 @@
     ".elfsight-app-08760789-afd9-4fa0-9275-cbac247e4400";
   const REVIEWS_THEME_STYLE_ID = "equine-reviews-theme";
   let reviewsWidgetObserver = null;
+  let reviewsShadowObserver = null;
+  let observedReviewsShadowRoot = null;
 
   function readTheme() {
     try {
@@ -29,11 +31,28 @@
     });
   }
 
+  function observeReviewsShadowRoot(shadowRoot) {
+    if (observedReviewsShadowRoot === shadowRoot) return;
+
+    reviewsShadowObserver?.disconnect();
+    observedReviewsShadowRoot = shadowRoot;
+    reviewsShadowObserver = new MutationObserver(() => {
+      updateReviewsWidgetTheme(
+        document.documentElement.classList.contains(DARK_CLASS),
+      );
+    });
+    reviewsShadowObserver.observe(shadowRoot, {
+      childList: true,
+      subtree: true,
+    });
+  }
+
   function updateReviewsWidgetTheme(isDark) {
     const widget = document.querySelector(REVIEWS_WIDGET_SELECTOR);
     const shadowRoot = widget?.firstElementChild?.shadowRoot;
 
     if (!shadowRoot) return;
+    observeReviewsShadowRoot(shadowRoot);
 
     let style = shadowRoot.getElementById(REVIEWS_THEME_STYLE_ID);
 
@@ -48,11 +67,15 @@
       shadowRoot.appendChild(style);
     }
 
-    style.textContent = `
+    const darkReviewsCss = `
       .es-widget-title-container {
         color: #f3f7fb !important;
       }
     `;
+
+    if (style.textContent !== darkReviewsCss) {
+      style.textContent = darkReviewsCss;
+    }
   }
 
   function observeReviewsWidget() {
