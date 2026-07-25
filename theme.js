@@ -68,7 +68,8 @@
     }
 
     const darkReviewsCss = `
-      .es-widget-title-container {
+      .es-widget-title-container,
+      .es-widget-title-container * {
         color: #f3f7fb !important;
       }
     `;
