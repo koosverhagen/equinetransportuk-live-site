@@ -4958,7 +4958,8 @@ const FLEET_DETAIL_CONTENT = {
       "Overnight events",
       "Multiple horses with living space required",
     ],
-    video: "",
+    video: "videos/7-5t-3-horse-living-tour.mp4",
+    videoPoster: "videos/7-5t-3-horse-living-poster.webp",
   },
 
   "v75-2": {
