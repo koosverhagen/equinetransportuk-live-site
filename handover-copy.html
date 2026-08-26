@@ -262,6 +262,38 @@
           min-height: 10mm;
           padding: 1.8mm 2.5mm;
         }
+
+        /* Keep every part of page one, including the signature date, inside
+           the two-page print area without making the text feel cramped. */
+        .page-1 .top-row {
+          margin-bottom: 6mm;
+        }
+
+        .page-1 .info-table {
+          margin-bottom: 5mm;
+        }
+
+        .page-1 .status-grid {
+          margin: 4mm 0 5mm;
+        }
+
+        .page-1 .terms li {
+          margin-bottom: 1.2mm;
+          font-size: 10pt;
+        }
+
+        .page-1 .terms-signature-title {
+          margin-top: 4mm;
+        }
+
+        .page-1 .signature-row {
+          margin-top: 2mm;
+        }
+
+        .page-1 .signature-box img,
+        .page-1 .signature-empty {
+          height: 26mm;
+        }
       }
 
       .terms h2 {
@@ -522,17 +554,23 @@
         }
 
         .page {
-          width: 210mm;
-          height: 297mm;
-          min-height: 297mm;
+          /* Leave a small tolerance for AirPrint and remote printer rounding.
+             Exact 210 x 297 mm boxes can spill onto a second sheet. */
+          width: 209mm;
+          height: 295mm;
+          min-height: 295mm;
           margin: 0;
           padding: 11mm 11mm 9mm;
           box-shadow: none;
+          break-after: page;
           page-break-after: always;
+          break-inside: avoid-page;
+          page-break-inside: avoid;
           overflow: hidden;
         }
 
         .page:last-child {
+          break-after: auto;
           page-break-after: auto;
         }
 
