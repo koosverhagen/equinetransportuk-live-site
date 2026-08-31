@@ -6460,3 +6460,125 @@ html.theme-dark #step-3 .voucher-message.muted {
   color: #9eafc1 !important;
 }
 
+
+/* ======================================================
+   CSS-ONLY GLASS MENU TEST
+   Desktop enhancement only; the existing mobile menu is unchanged.
+====================================================== */
+
+@media (min-width: 1071px) {
+  .header-inner .main-nav {
+    position: relative;
+    isolation: isolate;
+    gap: 2px;
+    padding: 5px;
+    border: 1px solid rgba(15, 23, 42, 0.13);
+    border-radius: 999px;
+    background: rgba(248, 250, 252, 0.78) !important;
+    box-shadow:
+      0 4px 12px rgba(15, 23, 42, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.82);
+    -webkit-backdrop-filter: blur(16px) saturate(1.12);
+    backdrop-filter: blur(16px) saturate(1.12);
+  }
+
+  .header-inner .main-nav a {
+    position: relative;
+    z-index: 1;
+    display: block;
+    padding: 10px 11px;
+    border-radius: 999px;
+    color: rgba(15, 23, 42, 0.82) !important;
+    font-size: 12.5px;
+    font-weight: 650;
+    line-height: 1;
+    white-space: nowrap;
+    transition:
+      color 180ms ease,
+      background-color 180ms ease;
+  }
+
+  .header-inner .main-nav a:hover,
+  .header-inner .main-nav a:focus-visible {
+    color: #07111d !important;
+    background: rgba(15, 23, 42, 0.1);
+  }
+
+  .header-inner .main-nav a:focus-visible {
+    outline: 2px solid #69a2ff;
+    outline-offset: 2px;
+  }
+
+  @supports (position-anchor: --menu-target) and (top: anchor(top)) {
+    .header-inner .main-nav::before {
+      content: "";
+      position: absolute;
+      position-anchor: --menu-target;
+      z-index: 0;
+      top: anchor(top);
+      right: anchor(right);
+      bottom: anchor(bottom);
+      left: anchor(left);
+      border: 1px solid rgba(15, 23, 42, 0.18);
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.1);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        0 3px 8px rgba(15, 23, 42, 0.07);
+      -webkit-backdrop-filter: blur(5px);
+      backdrop-filter: blur(5px);
+      pointer-events: none;
+      opacity: 0;
+      transition:
+        top 300ms cubic-bezier(0.2, 0.9, 0.25, 1.16),
+        right 300ms cubic-bezier(0.2, 0.9, 0.25, 1.16),
+        bottom 300ms cubic-bezier(0.2, 0.9, 0.25, 1.16),
+        left 300ms cubic-bezier(0.2, 0.9, 0.25, 1.16),
+        opacity 120ms ease;
+    }
+
+    .header-inner .main-nav a:hover,
+    .header-inner .main-nav a:focus-visible {
+      anchor-name: --menu-target;
+      background: transparent;
+    }
+
+    .header-inner .main-nav:has(a:hover)::before,
+    .header-inner .main-nav:has(a:focus-visible)::before {
+      opacity: 1;
+    }
+  }
+
+  html.theme-dark .header-inner .main-nav {
+    border-color: rgba(255, 255, 255, 0.13);
+    background: rgba(7, 17, 29, 0.78) !important;
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.14),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  html.theme-dark .header-inner .main-nav a {
+    color: rgba(255, 255, 255, 0.82) !important;
+  }
+
+  html.theme-dark .header-inner .main-nav a:hover,
+  html.theme-dark .header-inner .main-nav a:focus-visible {
+    color: #ffffff !important;
+  }
+
+  @supports (position-anchor: --menu-target) and (top: anchor(top)) {
+    html.theme-dark .header-inner .main-nav::before {
+      border-color: rgba(105, 162, 255, 0.28);
+      background: rgba(255, 255, 255, 0.14);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        0 3px 8px rgba(0, 0, 0, 0.08);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header-inner .main-nav::before {
+    transition-duration: 0.01ms !important;
+  }
+}
